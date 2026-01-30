@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Umbraco.AI.Diagnostics.Web/Umbraco.AI.Diagnostics.Web.csproj" />
+  <Project Path="Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj" />
+</Solution>

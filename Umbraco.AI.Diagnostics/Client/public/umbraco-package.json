@@ -1,0 +1,77 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "id": "Umbraco.AI.Diagnostics",
+  "name": "Umbraco AI Diagnostics",
+  "description": "AI-powered log diagnostics for Umbraco",
+  "version": "1.0.0",
+  "extensions": [
+    {
+      "type": "sectionSidebarApp",
+      "kind": "menuWithEntityActions",
+      "alias": "UmbracoAIDiagnostics.SectionSidebarApp",
+      "name": "Umbraco AIDiagnostics Sidebar",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/tree.js",
+      "meta": {
+        "label": "AIDiagnostics",
+        "menu": "Umb.Menu.Settings"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Settings"
+        }
+      ]
+    },
+    {
+      "type": "workspace",
+      "alias": "UmbracoAIDiagnostics.Workspace",
+      "name": "Umbraco AI Diagnostics Workspace",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/workspace.js",
+      "meta": {
+        "entityType": "umbraco-ai-diagnostics-item"
+      }
+    },
+    {
+      "type": "workspaceView",
+      "alias": "UmbracoAIDiagnostics.WorkspaceView",
+      "name": "Umbraco AI Diagnostics View",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/workspace-view.js",
+      "weight": 200,
+      "meta": {
+        "label": "Umbraco AI Diagnostics",
+        "pathname": "umbracoai-diagnostics",
+        "icon": "icon-wand"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.WorkspaceAlias",
+          "match": "UmbracoAIDiagnostics.Workspace"
+        }
+      ]
+    },
+    {
+      "type": "workspaceView",
+      "alias": "UmbracoAIDiagnostics.InstructionsView",
+      "name": "Umbraco AI Diagnostics Instructions View",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/instructions-view.js",
+      "weight": 100,
+      "meta": {
+        "label": "Instructions",
+        "pathname": "instructions",
+        "icon": "icon-info"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.WorkspaceAlias",
+          "match": "UmbracoAIDiagnostics.Workspace"
+        }
+      ]
+    },
+    {
+      "type": "repository",
+      "alias": "UmbracoAIDiagnostics.Repository",
+      "name": "Umbraco AI Diagnostics Repository",
+      "api": "/App_Plugins/UmbracoAIDiagnostics/repository.js"
+    }
+  ]
+}
