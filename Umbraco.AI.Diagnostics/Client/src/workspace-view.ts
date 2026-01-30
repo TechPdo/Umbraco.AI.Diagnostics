@@ -528,7 +528,10 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
       font-weight: 600;
       color: var(--uui-color-text-alt);
     }
-
+    .inline > uui-badge {
+        margin-right: 0px;
+        position: inherit;
+    }
     uui-badge {
       text-transform: uppercase;
       font-weight: 600;

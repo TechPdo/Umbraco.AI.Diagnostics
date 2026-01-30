@@ -6,188 +6,195 @@ export class UmbracoAIDiagnosticsInstructionsViewElement extends UmbElementMixin
 
     render() {
         return html`
-      <uui-box headline="Quick Start — AI Diagnostics">
+      <uui-box headline="Umbraco AI Diagnostics — Readme">
         <div class="content">
-          <h2>Quick Start Guide — Umbraco.AI.Diagnostics</h2>
+          <h2>🤖 Umbraco AI Diagnostics For Umbraco 17+</h2>
+
+          <p><strong>Analyze errors in your Umbraco website using Artificial Intelligence!</strong></p>
+          <p>Stop wasting hours reading through log files. Let AI analyze your website's errors and give you clear, actionable solutions in plain English.</p>
+
+          <hr />
 
           <section class="instruction-section">
-            <h3>⚙️ Prerequisites</h3>
+            <h3>✨ Features</h3>
+
+            <h4>🧠 Smart AI Analysis</h4>
+            <p>Your logs are analyzed by powerful AI models that understand common web application issues and can explain them clearly.</p>
+
+            <h4>🔄 Automatic Grouping</h4>
+            <p>If the same error appears 100 times, you'll see it as one issue with a count of "100" — not 100 separate items.</p>
+
+            <h4>🎯 Multiple AI Options</h4>
+            <p>Choose from:</p>
             <ul>
-              <li>Umbraco 17+ project</li>
-              <li>.NET 10 SDK</li>
-              <li>Node.js 18+ (for frontend build)</li>
-              <li>An AI provider key or local Ollama instance</li>
+              <li><strong>Google Gemini</strong> - Cloud-based, powerful, easy to set up</li>
+              <li><strong>Ollama</strong> - FREE, runs on your own computer, no internet needed</li>
+              <li><strong>OpenAI</strong> (coming soon!)</li>
+              <li><strong>Azure OpenAI</strong> (coming soon!)</li>
+            </ul>
+
+            <h4>🎨 Beautiful Dashboard</h4>
+            <p>Easy-to-use interface right inside your Umbraco admin panel.</p>
+
+            <h4>📊 Comprehensive Reports</h4>
+            <p>Get detailed analysis with:</p>
+            <ul>
+              <li>Overall health summary</li>
+              <li>Likely causes for each issue</li>
+              <li>Step-by-step fix suggestions</li>
+              <li>Reference documentation links</li>
+              <li>Severity assessments</li>
             </ul>
           </section>
 
-          <section class="instruction-section">
-            <h3>📦 Install Package</h3>
-            <p><strong>Recommended — NuGet:</strong></p>
-            <uui-code-block language="bash">dotnet add package Umbraco.AI.Diagnostics</uui-code-block>
-
-            <p><strong>Or clone &amp; build:</strong></p>
-            <uui-code-block language="bash">
-git clone https://github.com/yourusername/Umbraco.AI.Diagnostics.git
-cd Umbraco.AI.Diagnostics
-./build.sh    # or build.bat on Windows
-            </uui-code-block>
-          </section>
+          <hr />
 
           <section class="instruction-section">
-            <h3>🔒 Configure AI Provider</h3>
-            <p>Add to <code>appsettings.json</code>. Example — OpenAI:</p>
-            <uui-code-block language="json">
-{
-  "Umbraco": {
-    "AI": {
-      "Diagnostics": {
-        "AIProvider": "OpenAI",
-        "OpenAI": {
-          "ApiKey": "sk-your-api-key-here",
-          "Model": "gpt-4"
-        }
-      }
-    }
-  }
-}
-            </uui-code-block>
+            <h3>⚙️ Configuration</h3>
 
-            <p>Example — Ollama (local, free):</p>
-            <uui-code-block language="json">
-{
-  "Umbraco": {
-    "AI": {
-      "Diagnostics": {
-        "AIProvider": "Ollama",
-        "Ollama": {
-          "Endpoint": "http://localhost:11434",
-          "Model": "llama2"
-        }
-      }
-    }
-  }
-}
-            </uui-code-block>
+            <h4>Step 1: Choose Your AI Provider</h4>
+            <p>You need to pick ONE of these options:</p>
 
-            <p class="note">For Ollama: <code>ollama pull llama2</code> and <code>ollama serve</code>.</p>
-          </section>
-
-          <section class="instruction-section">
-            <h3>🧩 Register Services</h3>
-            <p>Add the diagnostic services in <code>Program.cs</code>:</p>
-            <uui-code-block language="csharp">
-using Umbraco.AI.Diagnostics.Extensions;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add after CreateUmbracoBuilder()
-builder.Services.AddUmbracoAIDiagnostics(builder.Configuration);
-
-// ... rest of configuration
-var app = builder.Build();
-app.Run();
-            </uui-code-block>
-            <p><strong>Note:</strong> Composer auto-registration is included via <code>AIDiagnosticsComposer</code>.</p>
-          </section>
-
-          <section class="instruction-section">
-            <h3>🛠 Build Frontend (if applicable)</h3>
-            <p>If you cloned the repo:</p>
-            <uui-code-block language="bash">
-npm install
-npm run build
-            </uui-code-block>
-            <p>If installed from NuGet, frontend assets are already built and packaged.</p>
-          </section>
-
-          <section class="instruction-section">
-            <h3>🚪 Access the Dashboard</h3>
+            <h5>🟢 Option 1: Ollama (FREE - Recommended for Beginners)</h5>
+            <p>Ollama runs AI on your own computer - completely free!</p>
             <ol>
-              <li>Start your Umbraco app</li>
-              <li>Log in to the backoffice</li>
-              <li>Go to <strong>Settings</strong></li>
-              <li>Open <strong>AI Diagnostics</strong></li>
+              <li>Download Ollama: <a href="https://ollama.com" target="_blank">https://ollama.com</a></li>
+              <li>Install and start Ollama (run the installer)</li>
+              <li>Download an AI model: <uui-code-block language="bash">ollama pull llama3</uui-code-block></li>
+            </ol>
+
+            <h5>🔵 Option 2: Google Gemini (Easy Cloud Setup)</h5>
+            <ol>
+              <li>Get an API Key:
+                <ul>
+                  <li>Go to <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></li>
+                  <li>Click "Get API Key"</li>
+                  <li>Copy your key</li>
+                </ul>
+              </li>
+              <li>Keep your API key safe — you'll need it in Step 2</li>
+            </ol>
+
+            <h4>Step 2: Configure Your Settings</h4>
+            <p>Open the file called <code>appsettings.json</code> in your Umbraco project and add this section:</p>
+
+            <uui-code-block language="json">
+{
+  "AI": {
+    "Diagnostics": {
+      "LogLevels": ["Error", "Critical"],
+      "MaxBatchSize": 100,
+      "EnableAI": true,
+      "AIProvider": "Ollama",
+      "PromptFilePath": "prompt/analysis-prompt.txt",
+      "Ollama": {
+        "Endpoint": "http://localhost:11434",
+        "Model": "llama3"
+      },
+      "Gemini": {
+        "ApiKey": "YOUR-API-KEY-HERE",
+        "Model": "gemini-1.5-flash"
+      }
+    }
+  }
+}
+            </uui-code-block>
+
+            <p><strong>Important:</strong> Replace <code>YOUR-API-KEY-HERE</code> with your actual API key from Step 1.</p>
+
+            <h5>Settings explained</h5>
+            <ul>
+              <li><strong>LogLevels</strong>: Which severity levels to analyze (Trace, Debug, Information, Warning, Error, Critical). Default: <code>["Error","Critical","Warning"]</code></li>
+              <li><strong>MaxBatchSize</strong>: Maximum number of unique issues to analyze at once. Default: <code>100</code></li>
+              <li><strong>EnableAI</strong>: <code>true</code> = AI analysis enabled, <code>false</code> = show raw logs</li>
+              <li><strong>AIProvider</strong>: Which AI service to use (options: <code>"Ollama"</code> or <code>"Gemini"</code>)</li>
+              <li><strong>PromptFilePath</strong>: Optional path to custom prompt file for advanced users</li>
+            </ul>
+
+            <h4>Step 3: Start Using It!</h4>
+            <ol>
+              <li>Start your Umbraco website (press F5 in Visual Studio)</li>
+              <li>Log in to the Umbraco admin panel (the backoffice)</li>
+              <li>Click on <strong>Settings</strong> in the left menu</li>
+              <li>Click <strong>AI Diagnostics</strong></li>
+              <li>Choose which types of errors to analyze (Error, Critical, or Warning)</li>
+              <li>Select a time range (last hour, day, week, etc.)</li>
+              <li>Click the big <strong>Analyze Logs</strong> button</li>
+              <li>Wait a few seconds while AI does its magic! ✨</li>
             </ol>
           </section>
 
+          <hr />
+
           <section class="instruction-section">
-            <h3>📊 Analyze Logs</h3>
-            <ol>
-              <li>Select log levels (Error, Critical, Warning)</li>
-              <li>Choose time range (1 hour, 24 hours, 7 days)</li>
-              <li>Click <em>Analyze Logs</em></li>
-              <li>Review AI analysis and download JSON report</li>
-            </ol>
+            <h3>Understanding Your Results</h3>
+
+            <h4>📈 Summary Statistics</h4>
+            <ul>
+              <li>Total logs analyzed</li>
+              <li>Number of unique issues found</li>
+              <li>Overall health assessment from AI</li>
+            </ul>
+
+            <h4>🔍 Detailed Analysis for Each Issue</h4>
+            <ul>
+              <li><strong>Log Entry</strong>: The actual error message and when it occurred</li>
+              <li><strong>Occurrence Count</strong>: How many times this exact issue appeared</li>
+              <li><strong>Likely Cause</strong>: AI's explanation of what's wrong (in plain English)</li>
+              <li><strong>Suggested Fixes</strong>: Step-by-step solutions to try (ordered from easiest to most complex)</li>
+              <li><strong>Reference Links</strong>: Helpful documentation and guides</li>
+              <li><strong>Severity Assessment</strong>: How serious the issue is (Low, Medium, High, Critical)</li>
+            </ul>
+          </section>
+
+          <hr />
+
+          <section class="instruction-section">
+            <h3>🚀 Coming Soon</h3>
+            <ul>
+              <li>OpenAI Integration</li>
+              <li>Azure OpenAI</li>
+              <li>Export to PDF/Excel</li>
+              <li>Trend Analysis</li>
+              <li>Enhanced Visualizations</li>
+            </ul>
+          </section>
+
+          <hr />
+
+          <section class="instruction-section">
+            <h3>🐛 Issues & Support</h3>
+            <p>Found a bug or have a suggestion? We'd love to hear from you!</p>
+            <p>Report Issues: <a href="https://github.com/TechPdo/Umbraco.AI.Diagnostics/issues" target="_blank">GitHub Issues</a></p>
+            <p>When reporting an issue, please include:</p>
+            <ul>
+              <li>What you expected to happen</li>
+              <li>What actually happened</li>
+              <li>Error messages (if any)</li>
+              <li>Your configuration (without API keys!)</li>
+              <li>Steps to reproduce</li>
+            </ul>
+          </section>
+
+          <hr />
+
+          <section class="instruction-section">
+            <h3>📜 License</h3>
+            <p>This project is licensed under the MIT License - see the <a href="https://github.com/TechPdo/Umbraco.AI.Diagnostics/blob/main/LICENSE" target="_blank">LICENSE</a> file for details.</p>
           </section>
 
           <section class="instruction-section">
-            <h3>🔎 What the Report Contains</h3>
+            <h3>🙏 Acknowledgments</h3>
             <ul>
-              <li><strong>Summary statistics</strong> — totals and unique issues</li>
-              <li><strong>AI summary</strong> — high-level assessment</li>
-              <li><strong>Detailed items</strong> — likely cause, suggested fixes, links, severity</li>
+              <li>Built with ❤️ for the Umbraco community</li>
+              <li>Powered by AI (Gemini, Ollama, and more)</li>
+              <li>Lots of coffee ☕</li>
             </ul>
           </section>
 
           <section class="instruction-section">
-            <h3>🩺 Troubleshooting</h3>
-            <ul>
-              <li><strong>No logs found:</strong> Ensure <code>umbraco/Logs/</code> exists and contains data for the selected range.</li>
-              <li><strong>AI client not configured:</strong> Verify API key and that <code>EnableAI</code> is <code>true</code>.</li>
-              <li><strong>Dashboard missing:</strong> Run <code>npm run build</code> and confirm <code>umbraco-package.json</code> is included.</li>
-              <li><strong>API errors:</strong> Check quotas, network, and server logs in <code>umbraco/Logs/</code>.</li>
-            </ul>
-          </section>
-
-          <section class="instruction-section">
-            <h3>🧰 Programmatic Usage</h3>
-            <p>Consume the analysis service in code:</p>
-            <uui-code-block language="csharp">
-public class MyController : Controller
-{
-    private readonly ILogAnalysisService _logAnalysis;
-
-    public MyController(ILogAnalysisService logAnalysis) => _logAnalysis = logAnalysis;
-
-    [HttpGet]
-    public async Task<IActionResult> GetDiagnostics()
-    {
-        var report = await _logAnalysis.AnalyzeLogsAsync(
-            logLevels: new List&lt;string&gt; { "Error", "Critical" },
-            timeRange: "24hours"
-        );
-
-        return Json(report);
-    }
-}
-            </uui-code-block>
-          </section>
-
-          <section class="instruction-section">
-            <h3>🔧 Configuration Reference (examples)</h3>
-            <uui-code-block language="json">
-{
-  "Umbraco": {
-    "AI": {
-      "Diagnostics": {
-        "LogLevels": ["Error","Critical","Warning"],
-        "MaxBatchSize": 100,
-        "EnableAI": true,
-        "AIProvider": "OpenAI"
-      }
-    }
-  }
-}
-            </uui-code-block>
-          </section>
-
-          <section class="instruction-section">
-            <h3>📚 Resources</h3>
-            <ul>
-              <li><a href="https://docs.umbraco.com" target="_blank">Umbraco Documentation</a></li>
-              <li><a href="https://docs.umbraco.com/umbraco-cms/extending" target="_blank">Extending Umbraco</a></li>
-              <li><a href="https://ollama.ai" target="_blank">Ollama</a> — local model hosting</li>
-            </ul>
+            <p><strong>Happy debugging! 🎉</strong></p>
+            <p><em>Made with ❤️ for the Umbraco community</em></p>
           </section>
         </div>
       </uui-box>
@@ -215,6 +222,12 @@ public class MyController : Controller
       color: var(--uui-color-interactive);
       margin: 0 0 var(--uui-size-space-3) 0;
       font-size: var(--uui-type-h5-size);
+      font-weight: 600;
+    }
+
+    h4, h5 {
+      margin: var(--uui-size-space-2) 0;
+      color: var(--uui-color-text);
       font-weight: 600;
     }
 
@@ -256,25 +269,6 @@ public class MyController : Controller
     uui-code-block {
       margin: var(--uui-size-space-3) 0;
       white-space: pre-wrap;
-    }
-
-    .endpoint {
-      display: flex;
-      align-items: center;
-      gap: var(--uui-size-space-3);
-      padding: var(--uui-size-space-3);
-      background: var(--uui-color-surface-alt);
-      border-radius: var(--uui-border-radius);
-      margin: var(--uui-size-space-3) 0;
-    }
-
-    .method {
-      background: var(--uui-color-positive);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.85em;
     }
 
     a {

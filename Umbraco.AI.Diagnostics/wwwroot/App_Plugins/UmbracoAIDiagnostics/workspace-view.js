@@ -1,16 +1,16 @@
 import { UmbElementMixin as R } from "@umbraco-cms/backoffice/element-api";
 import { LitElement as E, html as o, unsafeHTML as v, css as A, state as p, customElement as L } from "@umbraco-cms/backoffice/external/lit";
 import { UmbracoAIDiagnosticsRepository as I } from "./repository.js";
-var W = Object.defineProperty, M = Object.getOwnPropertyDescriptor, b = (r) => {
+var W = Object.defineProperty, M = Object.getOwnPropertyDescriptor, $ = (r) => {
   throw TypeError(r);
 }, c = (r, e, t, u) => {
   for (var l = u > 1 ? void 0 : u ? M(e, t) : e, a = r.length - 1, s; a >= 0; a--)
     (s = r[a]) && (l = (u ? s(e, t, l) : s(l)) || l);
   return u && l && W(e, t, l), l;
-}, f = (r, e, t) => e.has(r) || b("Cannot " + t), k = (r, e, t) => (f(r, e, "read from private field"), e.get(r)), $ = (r, e, t) => e.has(r) ? b("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), S = (r, e, t, u) => (f(r, e, "write to private field"), e.set(r, t), t), h = (r, e, t) => (f(r, e, "access private method"), t), m, d, x, w, y, z, C;
+}, f = (r, e, t) => e.has(r) || $("Cannot " + t), k = (r, e, t) => (f(r, e, "read from private field"), e.get(r)), b = (r, e, t) => e.has(r) ? $("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), S = (r, e, t, u) => (f(r, e, "write to private field"), e.set(r, t), t), h = (r, e, t) => (f(r, e, "access private method"), t), m, d, x, w, y, z, C;
 let n = class extends R(E) {
   constructor() {
-    super(), $(this, d), this._loading = !1, this._error = "", this._report = null, this._criticalChecked = !0, this._errorChecked = !0, this._warningChecked = !0, this._timeRange = "1hour", $(this, m), S(this, m, new I(this));
+    super(), b(this, d), this._loading = !1, this._error = "", this._report = null, this._criticalChecked = !0, this._errorChecked = !0, this._warningChecked = !0, this._timeRange = "1hour", b(this, m), S(this, m, new I(this));
   }
   // Add the markdown rendering function
   renderMarkdown(r) {
@@ -379,7 +379,10 @@ n.styles = A`
       font-weight: 600;
       color: var(--uui-color-text-alt);
     }
-
+    .inline > uui-badge {
+        margin-right: 0px;
+        position: inherit;
+    }
     uui-badge {
       text-transform: uppercase;
       font-weight: 600;
