@@ -3,8 +3,8 @@
   "AddOnPackagesRequiredForUmbracoCloud": [],
   "AuthorDetails": {
     "Name": "Pasang Tamang",
-    "Url": "https://our.umbraco.com/members/id:17025/",
-    "ImageUrl": "https://our.umbraco.com/media/upload/556245fb-216d-4d5d-b8d5-6934a136ccd4/1763978519143.jpg?width=125&height=125&mode=crop&upscale=true",
+    "Url": "https://github.com/TechPdo",
+    "ImageUrl": "https://avatars.githubusercontent.com/u/45009265?v=4",
     "SyncContributorsFromRepository": false
   },
   "Category": "Developer Tools",
@@ -14,7 +14,7 @@
   "PackagesByAuthor": [],
   "RelatedPackages": [],
   "LicenseTypes": [ "Free" ],
-  "Tags": [ "umbraco", "plugin", "package", "umbraco-marketplace" ],
+  "Tags": [ "umbraco", "plugin", "package", "umbraco-marketplace", "Artificial Intelligence", "AI" ],
   "Title": "Umbraco AI Diagnostics",
   "VersionSpecificPackageIds": [
     {

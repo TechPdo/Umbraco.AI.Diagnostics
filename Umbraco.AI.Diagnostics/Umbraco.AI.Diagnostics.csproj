@@ -1,45 +1,58 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
 
-  <PropertyGroup>
-    <PackageId>Umbraco.AI.Diagnostics</PackageId>
-    <Product>Umbraco.AI.Diagnostics</Product>
-    <Title>Umbraco AI Diagnostics</Title>
-    <Version>1.0.0</Version>
-    <Authors>Pasang Tamang</Authors>
-    <Description>Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.</Description>
-    <PackageProjectUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</RepositoryUrl>
-    <PackageTags>umbraco package;umbraco-marketplace</PackageTags>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+		<PackageId>Umbraco.AI.Diagnostics</PackageId>
+		<Product>Umbraco.AI.Diagnostics</Product>
+		<Title>Umbraco AI Diagnostics</Title>
+		<Version>1.0.0</Version>
+		<Authors>Pasang Tamang</Authors>
+		<Description>Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.</Description>
+		<PackageProjectUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>umbraco package;umbraco-marketplace;ai</PackageTags>
+		<Copyright>$([System.DateTime]::Now.Year) © $(Company)</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
 
-
-  <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Dont include the client folder as part of packaging nuget build -->
-    <Content Remove="Client\**" />
-    <Content Include="prompt\analysis-prompt.txt" Pack="true" PackagePath="prompt" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="Client\public\umbraco-package.json" Pack="false" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
-	  <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
-  </ItemGroup>
 	<ItemGroup>
-		<None Include="readme.txt" Pack="true" PackagePath="/" />
-		<None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
+		<PackageReference Include="Umbraco.Cms.Web.Website" Version="*" />
+		<PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
+		<PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
+		<PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
+	</ItemGroup>
+
+	<!-- Prompt file (kept under prompt/ in consuming project) -->
+	<ItemGroup>
+		<Content Include="prompt\analysis-prompt.txt"
+				 Pack="true"
+				 PackagePath="contentFiles/any/any/prompt/analysis-prompt.txt"
+				 BuildAction="None"
+				 CopyToOutputDirectory="Never">
+			<Flatten>false</Flatten>
+		</Content>
+	</ItemGroup>
+
+	<!-- Optional folders -->
+	<ItemGroup>
+		<Folder Include="wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
+		<None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+	</ItemGroup>
+
+	<!-- Exclude client folder from NuGet -->
+	<ItemGroup>
+		<Content Remove="Client\**" />
+		<None Include="Client\public\umbraco-package.json" Pack="false" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 </Project>

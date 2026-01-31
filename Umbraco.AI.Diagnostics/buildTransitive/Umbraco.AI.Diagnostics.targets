@@ -1,21 +1,33 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<AIDiagnosticsContentFilesPath>$(MSBuildThisFileDirectory)..\wwwroot\App_Plugins\UmbracoAIDiagnostics\**\*.*</AIDiagnosticsContentFilesPath>
-	</PropertyGroup>
 
+	<!-- Existing App_Plugins logic (unchanged) -->
+	<PropertyGroup>
+		<AIDiagnosticsPluginPath>
+			$(MSBuildThisFileDirectory)..\wwwroot\App_Plugins\UmbracoAIDiagnostics\**\*.*
+		</AIDiagnosticsPluginPath>
+		<AIDiagnosticsPromptPath>
+			$(MSBuildThisFileDirectory)..\contentFiles\any\any\prompt\analysis-prompt.txt
+		</AIDiagnosticsPromptPath>
+	</PropertyGroup>
 	<Target Name="CopyAIDiagnosticsAssets" BeforeTargets="BeforeBuild">
 		<ItemGroup>
-			<AIDiagnosticsContentFiles Include="$(AIDiagnosticsContentFilesPath)" />
+			<AIDiagnosticsPluginFiles Include="$(AIDiagnosticsPluginPath)" />
 		</ItemGroup>
-		<Message Text="Copying AI Diagnostics files: $(AIDiagnosticsContentFilesPath) - #(@(AIDiagnosticsContentFiles)->Count()) files" Importance="high" />
-		<Copy SourceFiles="@(AIDiagnosticsContentFiles)" DestinationFiles="@(AIDiagnosticsContentFiles->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Message Text="Copying Umbraco AI Diagnostics plugin assets" Importance="high" />
+		<Copy
+		  SourceFiles="@(AIDiagnosticsPluginFiles)"
+		  DestinationFiles="@(AIDiagnosticsPluginFiles->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\%(RecursiveDir)%(Filename)%(Extension)')"
+		  SkipUnchangedFiles="true" />
 	</Target>
-
+	<Target Name="CopyAIDiagnosticsPrompt" BeforeTargets="BeforeBuild">
+		<Message Text="Copying AI Diagnostics prompt file" Importance="high" />
+		<Copy
+		  SourceFiles="$(AIDiagnosticsPromptPath)"
+		  DestinationFiles="$(MSBuildProjectDirectory)\prompt\analysis-prompt.txt"
+		  SkipUnchangedFiles="true" />
+	</Target>
 	<Target Name="ClearDiagnosticsAssets" BeforeTargets="Clean">
-		<ItemGroup>
-			<DiagnosticsDir Include="$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
-		</ItemGroup>
-		<Message Text="Clearing old AI Diagnostics data" Importance="high" />
-		<RemoveDir Directories="@(DiagnosticsDir)" />
+		<RemoveDir Directories="$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
+		<RemoveDir Directories="$(MSBuildProjectDirectory)\prompt\" />
 	</Target>
 </Project>
