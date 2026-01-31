@@ -1,4 +1,4 @@
-# 🤖 Umbraco AI Diagnostics For Umbraco 17+
+# 🤖 AI Diagnostics For Umbraco 17+
 
 **Analyze errors in your Umbraco website using Artificial Intelligence!**
 

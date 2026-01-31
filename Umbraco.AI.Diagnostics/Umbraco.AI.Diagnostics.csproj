@@ -45,4 +45,7 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
+	<ItemGroup>
+		<None Include="readme.txt" Pack="true" PackagePath="/" />
+	</ItemGroup>
 </Project>
