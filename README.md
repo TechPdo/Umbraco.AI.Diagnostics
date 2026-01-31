@@ -39,13 +39,13 @@ Get detailed analysis with:
 ### Using .NET CLI
 
 ```bash
-dotnet add package Umbraco.AI.Diagnostics
+dotnet add package AI.Diagnostics
 ```
 
 ### Using NuGet Package Manager
 
 ```bash
-Install-Package Umbraco.AI.Diagnostics
+Install-Package AI.Diagnostics
 ```
 
 ### Using Visual Studio
@@ -53,7 +53,7 @@ Install-Package Umbraco.AI.Diagnostics
 1. Right-click on your project in Visual Studio
 2. Click "Manage NuGet Packages..."
 3. Click the "Browse" tab
-4. Search for: `Umbraco.AI.Diagnostics`
+4. Search for: `AI.Diagnostics`
 5. Click "Install"
 
 ---

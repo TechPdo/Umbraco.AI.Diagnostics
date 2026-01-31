@@ -38,7 +38,7 @@
       "element": "/App_Plugins/UmbracoAIDiagnostics/workspace-view.js",
       "weight": 200,
       "meta": {
-        "label": "Umbraco AI Diagnostics",
+        "label": "AI Diagnostics",
         "pathname": "umbracoai-diagnostics",
         "icon": "icon-wand"
       },

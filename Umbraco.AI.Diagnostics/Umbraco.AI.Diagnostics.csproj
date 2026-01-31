@@ -8,7 +8,7 @@
 		<PackageId>AI.Diagnostics</PackageId>
 		<Product>AI.Diagnostics</Product>
 		<Title>AI Diagnostics</Title>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Pasang Tamang</Authors>
 		<Description>Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.</Description>
 		<PackageProjectUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</PackageProjectUrl>
@@ -27,20 +27,10 @@
 		<PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
 	</ItemGroup>
 
-	<!-- Prompt file (kept under prompt/ in consuming project) -->
-	<ItemGroup>
-		<Content Include="prompt\analysis-prompt.txt"
-				 Pack="true"
-				 PackagePath="contentFiles/any/any/prompt/analysis-prompt.txt"
-				 BuildAction="None"
-				 CopyToOutputDirectory="Never">
-			<Flatten>false</Flatten>
-		</Content>
-	</ItemGroup>
-
 	<!-- Optional folders -->
 	<ItemGroup>
 		<Folder Include="wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
+		<Folder Include="prompt\" />
 		<None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
 	</ItemGroup>
 

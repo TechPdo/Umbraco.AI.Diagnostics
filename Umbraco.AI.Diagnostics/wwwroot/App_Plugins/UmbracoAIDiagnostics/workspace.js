@@ -1,22 +1,22 @@
-import { UmbElementMixin as m } from "@umbraco-cms/backoffice/element-api";
-import { LitElement as n, html as l, customElement as p } from "@umbraco-cms/backoffice/external/lit";
-var b = Object.getOwnPropertyDescriptor, u = (a, o, i, s) => {
-  for (var e = s > 1 ? void 0 : s ? b(o, i) : o, r = a.length - 1, c; r >= 0; r--)
-    (c = a[r]) && (e = c(e) || e);
+import { UmbElementMixin as n } from "@umbraco-cms/backoffice/element-api";
+import { LitElement as m, html as l, customElement as p } from "@umbraco-cms/backoffice/external/lit";
+var u = Object.getOwnPropertyDescriptor, b = (s, a, i, o) => {
+  for (var e = o > 1 ? void 0 : o ? u(a, i) : a, r = s.length - 1, c; r >= 0; r--)
+    (c = s[r]) && (e = c(e) || e);
   return e;
 };
-let t = class extends m(n) {
+let t = class extends n(m) {
   render() {
     return l`
       <umb-workspace-editor
         alias="UmbracoAIDiagnostics.Workspace"
-        .headline=${"Umbraco AI Diagnostics"}
+        .headline=${"AI Diagnostics"}
       >
       </umb-workspace-editor>
     `;
   }
 };
-t = u([
+t = b([
   p("umbraco-ai-diagnostics-workspace")
 ], t);
 const f = t;

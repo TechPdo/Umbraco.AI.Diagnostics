@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Umbraco.AI.Diagnostics.Models;
 using Umbraco.AI.Diagnostics.Services;
+using Umbraco.Cms.Web.Common.Authorization;
 
 namespace Umbraco.AI.Diagnostics.Controllers
 {
@@ -10,6 +12,7 @@ namespace Umbraco.AI.Diagnostics.Controllers
     /// Accessible at: /umbraco/backoffice/umbracoaidiagnostics/api/aidiagnostics
     /// </summary>
     [Route("umbraco/backoffice/umbracoaidiagnostics/api/[controller]")]
+    [Authorize(Policy = AuthorizationPolicies.SectionAccessContent)]
     public class AIDiagnosticsController : ControllerBase
     {
         private readonly ILogAnalysisService _logAnalysisService;

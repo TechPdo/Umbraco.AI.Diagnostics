@@ -8,7 +8,7 @@ export class UmbracoAIDiagnosticsWorkspaceElement extends UmbElementMixin(LitEle
         return html`
       <umb-workspace-editor
         alias="UmbracoAIDiagnostics.Workspace"
-        .headline=${'Umbraco AI Diagnostics'}
+        .headline=${'AI Diagnostics'}
       >
       </umb-workspace-editor>
     `;

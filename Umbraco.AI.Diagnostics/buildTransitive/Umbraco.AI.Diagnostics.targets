@@ -6,14 +6,14 @@
 			$(MSBuildThisFileDirectory)..\wwwroot\App_Plugins\UmbracoAIDiagnostics\**\*.*
 		</AIDiagnosticsPluginPath>
 		<AIDiagnosticsPromptPath>
-			$(MSBuildThisFileDirectory)..\contentFiles\any\any\prompt\analysis-prompt.txt
+			$(MSBuildThisFileDirectory)..\prompt\*.*
 		</AIDiagnosticsPromptPath>
 	</PropertyGroup>
 	<Target Name="CopyAIDiagnosticsAssets" BeforeTargets="BeforeBuild">
 		<ItemGroup>
 			<AIDiagnosticsPluginFiles Include="$(AIDiagnosticsPluginPath)" />
 		</ItemGroup>
-		<Message Text="Copying Umbraco AI Diagnostics plugin assets" Importance="high" />
+		<Message Text="Copying AI Diagnostics plugin assets" Importance="high" />
 		<Copy
 		  SourceFiles="@(AIDiagnosticsPluginFiles)"
 		  DestinationFiles="@(AIDiagnosticsPluginFiles->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\%(RecursiveDir)%(Filename)%(Extension)')"
