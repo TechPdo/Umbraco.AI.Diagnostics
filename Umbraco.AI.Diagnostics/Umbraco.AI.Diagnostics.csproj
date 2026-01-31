@@ -10,6 +10,13 @@
     <PackageId>Umbraco.AI.Diagnostics</PackageId>
     <Product>Umbraco.AI.Diagnostics</Product>
     <Title>Umbraco AI Diagnostics</Title>
+    <Version>1.0.0</Version>
+    <Authors>Pasang Tamang</Authors>
+    <Description>Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.</Description>
+    <PackageProjectUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</RepositoryUrl>
+    <PackageTags>umbraco package;umbraco-marketplace</PackageTags>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 
@@ -23,19 +30,16 @@
   <ItemGroup>
     <!-- Dont include the client folder as part of packaging nuget build -->
     <Content Remove="Client\**" />
-    <Content Include="prompt\analysis-prompt.txt" Pack="true"
-         PackagePath="prompt"
-         CopyToOutputDirectory="PreserveNewest" />
-
-    <!-- However make the Umbraco-package.json included for dotnet pack or nuget package and visible to the solution -->
+    <Content Include="prompt\analysis-prompt.txt" Pack="true" PackagePath="prompt" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Client\public\umbraco-package.json" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
+	  <None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
-<Target Name="BuildClient" BeforeTargets="Pack">
-  <Exec Command="npm run build" WorkingDirectory="/Client" />
-  <Copy SourceFiles="/Client/public/umbraco-package.json" DestinationFolder="wwwroot/App_Plugins/UmbracoAIDiagnostics" />
-</Target>
+	<ItemGroup>
+		<None Include="readme.txt" Pack="true" PackagePath="/" />
+		<None Include="umbraco-marketplace.json" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>

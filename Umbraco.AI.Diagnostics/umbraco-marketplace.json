@@ -1,0 +1,31 @@
+{
+  "$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+  "AddOnPackagesRequiredForUmbracoCloud": [],
+  "AuthorDetails": {
+    "Name": "Pasang Tamang",
+    "Url": "https://our.umbraco.com/members/id:17025/",
+    "ImageUrl": "https://our.umbraco.com/media/upload/556245fb-216d-4d5d-b8d5-6934a136ccd4/1763978519143.jpg?width=125&height=125&mode=crop&upscale=true",
+    "SyncContributorsFromRepository": false
+  },
+  "Category": "Developer Tools",
+  "Description": "Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.",
+  "IsSubPackageOf": "",
+  "PackageType": "Package",
+  "PackagesByAuthor": [],
+  "RelatedPackages": [],
+  "LicenseTypes": [ "Free" ],
+  "Tags": [ "umbraco", "plugin", "package", "umbraco-marketplace" ],
+  "Title": "Umbraco AI Diagnostics",
+  "VersionSpecificPackageIds": [
+    {
+      "UmbracoMajorVersion": 17,
+      "PackageId": "Umbraco.AI.Diagnostics"
+    }
+  ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://github.com/TechPdo/Umbraco.AI.Diagnostics/blob/main/screenshot/ai-diagnostics.png",
+      "Caption": "AI Diagnostics"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<AIDiagnosticsContentFilesPath>$(MSBuildThisFileDirectory)..\wwwroot\App_Plugins\UmbracoAIDiagnostics\**\*.*</AIDiagnosticsContentFilesPath>
+	</PropertyGroup>
+
+	<Target Name="CopyAIDiagnosticsAssets" BeforeTargets="BeforeBuild">
+		<ItemGroup>
+			<AIDiagnosticsContentFiles Include="$(AIDiagnosticsContentFilesPath)" />
+		</ItemGroup>
+		<Message Text="Copying AI Diagnostics files: $(AIDiagnosticsContentFilesPath) - #(@(AIDiagnosticsContentFiles)->Count()) files" Importance="high" />
+		<Copy SourceFiles="@(AIDiagnosticsContentFiles)" DestinationFiles="@(AIDiagnosticsContentFiles->'$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+	</Target>
+
+	<Target Name="ClearDiagnosticsAssets" BeforeTargets="Clean">
+		<ItemGroup>
+			<DiagnosticsDir Include="$(MSBuildProjectDirectory)\wwwroot\App_Plugins\UmbracoAIDiagnostics\" />
+		</ItemGroup>
+		<Message Text="Clearing old AI Diagnostics data" Importance="high" />
+		<RemoveDir Directories="@(DiagnosticsDir)" />
+	</Target>
+</Project>
