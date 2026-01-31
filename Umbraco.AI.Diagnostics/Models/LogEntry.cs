@@ -18,7 +18,7 @@ public class LogEntry
     /// <summary>
     /// Gets or sets the log message content.
     /// </summary>
-    public string Message { get; set; } = string.Empty;
+    public string? Message { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the exception details if available.
@@ -33,7 +33,7 @@ public class LogEntry
     /// <summary>
     /// Gets or sets additional properties from the log entry.
     /// </summary>
-    public Dictionary<string, string>? Properties { get; set; }
+    public Dictionary<string, string?>? Properties { get; set; }
 
     /// <summary>
     /// Generates a hash key for deduplication based on level, message, and exception.

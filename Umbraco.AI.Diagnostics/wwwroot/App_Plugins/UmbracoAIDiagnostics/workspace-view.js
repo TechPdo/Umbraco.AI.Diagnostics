@@ -114,6 +114,7 @@ let n = class extends R(E) {
                   <div class="inline">
                     <uui-badge color="danger">${r.logEntry?.level || "Unknown"}</uui-badge>
                     <uui-tag>${r.occurrenceCount || 1} occurrences</uui-tag>
+                    <uui-badge color="danger">${r.logEntry?.severityAssessment || "Unknown"}</uui-badge>
                   </div>
                   <p>
                     <strong>${r.logEntry?.timestamp ? new Date(r.logEntry.timestamp).toLocaleString() : "No timestamp"}</strong>
@@ -500,9 +501,9 @@ c([
 n = c([
   L("umbraco-ai-diagnostics-workspace-view")
 ], n);
-const T = n;
+const F = n;
 export {
   n as UmbracoAIDiagnosticsWorkspaceViewElement,
-  T as default
+  F as default
 };
 //# sourceMappingURL=workspace-view.js.map

@@ -15,16 +15,18 @@ public class PromptLoader
     private string? _cachedPrompt;
     private DateTime? _lastLoadTime;
     private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5);
+    private readonly IWebHostEnvironment _env;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PromptLoader"/> class.
     /// </summary>
     /// <param name="options">Diagnostics options containing prompt file path.</param>
     /// <param name="logger">Logger instance.</param>
-    public PromptLoader(IOptions<DiagnosticsOptions> options, ILogger<PromptLoader> logger)
+    public PromptLoader(IOptions<DiagnosticsOptions> options, ILogger<PromptLoader> logger, IWebHostEnvironment env)
     {
         _options = options.Value;
         _logger = logger;
+        _env = env;
     }
 
     /// <summary>
@@ -43,7 +45,7 @@ public class PromptLoader
 
         try
         {
-            var promptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _options.PromptFilePath);
+            var promptPath = Path.Combine(_env.ContentRootPath, _options.PromptFilePath);
 
             if (!File.Exists(promptPath))
             {

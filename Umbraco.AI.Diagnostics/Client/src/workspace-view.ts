@@ -298,6 +298,7 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
                   <div class="inline">
                     <uui-badge color="danger">${item.logEntry?.level || 'Unknown'}</uui-badge>
                     <uui-tag>${item.occurrenceCount || 1} occurrences</uui-tag>
+                    <uui-badge color="danger">${item.logEntry?.severityAssessment || 'Unknown'}</uui-badge>
                   </div>
                   <p>
                     <strong>${item.logEntry?.timestamp ? new Date(item.logEntry.timestamp).toLocaleString() : 'No timestamp'}</strong>

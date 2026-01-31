@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serilog.Core;
+using System;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using Umbraco.AI.Diagnostics.AI;
 using Umbraco.AI.Diagnostics.Models;
+using Umbraco.Cms.Core.Services;
 
 namespace Umbraco.AI.Diagnostics.Services;
 
@@ -18,6 +21,7 @@ public class LogAnalysisService : ILogAnalysisService
     private readonly DiagnosticsOptions _options;
     private readonly ILogger<LogAnalysisService> _logger;
     private readonly IWebHostEnvironment _env;
+    private readonly ILogViewerService _logViewerService;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LogAnalysisService"/> class.
@@ -29,12 +33,14 @@ public class LogAnalysisService : ILogAnalysisService
         IAIClient aiClient,
         IOptions<DiagnosticsOptions> options,
         ILogger<LogAnalysisService> logger,
+        ILogViewerService logViewerService,
         IWebHostEnvironment env)
     {
         _aiClient = aiClient;
         _options = options.Value;
         _logger = logger;
         _env = env;
+        _logViewerService = logViewerService;
     }
 
     /// <inheritdoc/>
@@ -101,27 +107,23 @@ public class LogAnalysisService : ILogAnalysisService
 
         try
         {
-            // Get Umbraco log directory
-            var logDirectory = Path.Combine(_env.ContentRootPath, "umbraco", "Logs");
-
-            if (!Directory.Exists(logDirectory))
+            var systemLogs = await _logViewerService.GetPagedLogsAsync(cutoffTime, DateTime.Now, 0, 10000, Cms.Core.Direction.Descending, null, logLevels.ToArray());
+            if(systemLogs.Result != null)
             {
-                _logger.LogWarning("Log directory not found: {Directory}", logDirectory);
-                return logs;
+                foreach (var log in systemLogs.Result.Items)
+                {
+                    var logEntry = new LogEntry
+                    {
+                        Timestamp = log.Timestamp.ToLocalTime().DateTime,
+                        Level = log.Level.ToString(),
+                        Message = log.RenderedMessage,
+                        Exception = log.Exception,
+                        Properties = log.Properties != null && log.Properties.Any() ? new Dictionary<string, string?>(log.Properties) : null
+                    };
+                    logs.Add(logEntry);
+                }
             }
-
-            // Get all log files in the directory
-            var logFiles = Directory.GetFiles(logDirectory, "*.json")
-                .OrderByDescending(f => File.GetLastWriteTime(f))
-                .ToList();
-
-            foreach (var logFile in logFiles)
-            {
-                var fileEntries = await ParseLogFileAsync(logFile, logLevels, cutoffTime, cancellationToken);
-                logs.AddRange(fileEntries);
-            }
-
-            _logger.LogInformation("Retrieved {Count} log entries from {FileCount} files", logs.Count, logFiles.Count);
+            _logger.LogInformation("Retrieved {Count} log entries on {datetime} files", logs.Count, DateTime.UtcNow);
             return logs;
         }
         catch (Exception ex)
@@ -261,163 +263,6 @@ public class LogAnalysisService : ILogAnalysisService
                 });
             }
         }
-    }
-
-    private async Task<List<LogEntry>> ParseLogFileAsync(string filePath, List<string> logLevels, DateTime cutoffTime, CancellationToken cancellationToken)
-    {
-        var entries = new List<LogEntry>();
-        const int maxRetries = 3;
-        for (int attempt = 0; attempt <= maxRetries; attempt++)
-        {
-            try
-            {
-                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using var sr = new StreamReader(fs, Encoding.UTF8);
-                string? line;
-                while ((line = await sr.ReadLineAsync().ConfigureAwait(false)) != null)
-                {
-                    if (string.IsNullOrWhiteSpace(line)) continue;
-                    var entry = ParseLogLine(line);
-                    if (entry != null && logLevels.Contains(entry.Level, StringComparer.OrdinalIgnoreCase) && entry.Timestamp >= cutoffTime)
-                        entries.Add(entry);
-                }
-                return entries;
-            }
-            catch (IOException) when (attempt < maxRetries)
-            {
-                await Task.Delay(200, cancellationToken).ConfigureAwait(false);
-                continue;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Error parsing log file: {FilePath}", filePath);
-                return entries;
-            }
-        }
-        return entries;
-    }
-
-    private LogEntry? ParseLogLine(string line)
-    {
-        try
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                AllowTrailingCommas = true,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            };
-
-            var serilog = JsonSerializer.Deserialize<JsonLog>(line, options);
-            if (serilog != null)
-            {
-                // Determine timestamp
-                string? timestampStr = serilog.T ?? serilog.Timestamp ?? serilog.Time;
-                if (string.IsNullOrEmpty(timestampStr) || !DateTime.TryParse(timestampStr, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out var parsedTimestamp))
-                {
-                    return null;
-                }
-
-                // Message and fields
-                var message = serilog.Mt ?? serilog.M ?? serilog.RenderedMessage ?? serilog.Message ?? string.Empty;
-                var level = serilog.L ?? serilog.Level ?? serilog.Log4NetLevel ?? string.Empty;
-                var exception = serilog.X ?? serilog.Exception;
-                var logger = serilog.SourceContext ?? serilog.Logger ?? string.Empty;
-
-                // Collect extension data into string dictionary, excluding common reserved keys
-                var reserved = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                {
-                    "@t","T","@l","L","@m","@mt","RenderedMessage","Message","Timestamp","Level","Exception","SourceContext","Logger","time","timestamp","level","exception","Log4NetLevel","@x","X"
-                };
-
-                var props = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                if (serilog.ExtensionData != null)
-                {
-                    foreach (var kv in serilog.ExtensionData)
-                    {
-                        if (reserved.Contains(kv.Key))
-                            continue;
-
-                        try
-                        {
-                            var v = kv.Value;
-                            string value = v.ValueKind switch
-                            {
-                                JsonValueKind.String => v.GetString() ?? "",
-                                JsonValueKind.Number => v.GetRawText(),
-                                JsonValueKind.True => "true",
-                                JsonValueKind.False => "false",
-                                JsonValueKind.Null => "",
-                                _ => v.GetRawText()
-                            };
-
-                            props[kv.Key] = value;
-                        }
-                        catch
-                        {
-                           
-                        }
-                    }
-                }
-
-                return new LogEntry
-                {
-                    Timestamp = parsedTimestamp.ToUniversalTime(),
-                    Level = MapLogLevel(level),
-                    Message = message,
-                    Exception = exception,
-                    Logger = logger,
-                    Properties = props.Count > 0 ? props : null
-                };
-            }
-        }
-        catch (JsonException)
-        {
-           
-        }
-        catch
-        {
-           
-        }
-
-        try
-        {
-            var parts = line.Split(new[] { ' ' }, 4);
-
-            if (parts.Length < 4)
-                return null;
-
-            var timestampStr = $"{parts[0]} {parts[1]}";
-            var level = parts[2].Trim('[', ']');
-            var message = parts[3];
-
-            if (!DateTime.TryParse(timestampStr, out var timestamp))
-                return null;
-
-            return new LogEntry
-            {
-                Timestamp = timestamp,
-                Level = MapLogLevel(level),
-                Message = message
-            };
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private string MapLogLevel(string level)
-    {
-        return level.ToUpperInvariant() switch
-        {
-            "ERR" => "Error",
-            "FTL" => "Critical",
-            "WRN" => "Warning",
-            "INF" => "Information",
-            "DBG" => "Debug",
-            _ => level
-        };
     }
 
     private DateTime GetCutoffTime(string timeRange)
