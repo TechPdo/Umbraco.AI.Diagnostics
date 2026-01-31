@@ -8,7 +8,7 @@
 		<PackageId>AI.Diagnostics</PackageId>
 		<Product>AI.Diagnostics</Product>
 		<Title>AI Diagnostics</Title>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Pasang Tamang</Authors>
 		<Description>Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.</Description>
 		<PackageProjectUrl>https://github.com/TechPdo/Umbraco.AI.Diagnostics</PackageProjectUrl>
