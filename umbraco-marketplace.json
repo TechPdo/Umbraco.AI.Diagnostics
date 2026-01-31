@@ -8,18 +8,18 @@
     "SyncContributorsFromRepository": false
   },
   "Category": "Developer Tools",
-  "Description": "Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.",
+  "Description": "AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.",
   "IsSubPackageOf": "",
   "PackageType": "Package",
   "PackagesByAuthor": [],
   "RelatedPackages": [],
   "LicenseTypes": [ "Free" ],
   "Tags": [ "umbraco", "plugin", "package", "umbraco-marketplace", "Artificial Intelligence", "AI" ],
-  "Title": "Umbraco AI Diagnostics",
+  "Title": "AI Diagnostics",
   "VersionSpecificPackageIds": [
     {
       "UmbracoMajorVersion": 17,
-      "PackageId": "Umbraco.AI.Diagnostics"
+      "PackageId": "AI.Diagnostics"
     }
   ],
   "Screenshots": [

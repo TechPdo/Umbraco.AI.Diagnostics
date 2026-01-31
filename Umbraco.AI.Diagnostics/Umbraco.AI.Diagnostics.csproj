@@ -5,9 +5,9 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
 
-		<PackageId>Umbraco.AI.Diagnostics</PackageId>
-		<Product>Umbraco.AI.Diagnostics</Product>
-		<Title>Umbraco AI Diagnostics</Title>
+		<PackageId>AI.Diagnostics</PackageId>
+		<Product>AI.Diagnostics</Product>
+		<Title>AI Diagnostics</Title>
 		<Version>1.0.0</Version>
 		<Authors>Pasang Tamang</Authors>
 		<Description>Umbraco AI Diagnostics analyzes application logs using AI to simplify complex issues by identifying possible root causes and providing actionable suggestions to fix them.</Description>
@@ -16,7 +16,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>umbraco package;umbraco-marketplace;ai</PackageTags>
-		<Copyright>$([System.DateTime]::Now.Year) © $(Company)</Copyright>
+		<Copyright>$([System.DateTime]::Now.Year) © $(Authors)</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
