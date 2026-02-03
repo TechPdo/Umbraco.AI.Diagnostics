@@ -4,6 +4,10 @@
 
 Stop wasting hours reading through log files. Let AI analyze your website's errors and give you clear, actionable solutions in plain English.
 
+| Package | NuGet |
+| ------- | ----- |
+| AI.Diagnostics | [![NuGet](https://img.shields.io/nuget/v/AI.Diagnostics)](https://www.nuget.org/packages/AI.Diagnostics) [![NuGet downloads](https://img.shields.io/nuget/dt/AI.Diagnostics.svg)](https://www.nuget.org/packages/AI.Diagnostics) |
+
 ---
 
 ## ✨ Features
