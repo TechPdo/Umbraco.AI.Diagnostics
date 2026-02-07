@@ -31,6 +31,7 @@ public static class ServiceCollectionExtensions
         // Register AI clients
         services.AddHttpClient<OllamaClient>();
         services.AddHttpClient<GeminiClient>();
+        services.AddHttpClient<OpenAIClient>();
 
         // Register the appropriate AI client based on configuration
         services.AddScoped<IAIClient>(serviceProvider =>
@@ -43,6 +44,7 @@ public static class ServiceCollectionExtensions
             {
                 "ollama" => serviceProvider.GetRequiredService<OllamaClient>(),
                 "gemini" => serviceProvider.GetRequiredService<GeminiClient>(),
+                "openai" => serviceProvider.GetRequiredService<OpenAIClient>(),
                 _ => serviceProvider.GetRequiredService<GeminiClient>() // default
             };
         });
@@ -72,6 +74,7 @@ public static class ServiceCollectionExtensions
         // Register AI clients
         services.AddHttpClient<OllamaClient>();
         services.AddHttpClient<GeminiClient>();
+        services.AddHttpClient<OpenAIClient>();
 
         // Register the appropriate AI client based on configuration
         services.AddScoped<IAIClient>(serviceProvider =>
@@ -83,6 +86,7 @@ public static class ServiceCollectionExtensions
             {
                 "ollama" => serviceProvider.GetRequiredService<OllamaClient>(),
                 "gemini" => serviceProvider.GetRequiredService<GeminiClient>(),
+                "openai" => serviceProvider.GetRequiredService<OpenAIClient>(),
                 _ => serviceProvider.GetRequiredService<GeminiClient>() // default
             };
         });

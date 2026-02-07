@@ -18,7 +18,7 @@ If the same error appears 100 times, you'll see it as one issue with a count of 
 Choose from:
 - **Google Gemini** - Cloud-based, powerful, easy to set up
 - **Ollama** - FREE, runs on your own computer, no internet needed
-- **OpenAI** *(coming soon!)*
+- **OpenAI** - Use GPT models for analysis
 - **Azure OpenAI** *(coming soon!)*
 
 ### 🎨 **Beautiful Dashboard**
@@ -86,8 +86,15 @@ Google's Gemini is powerful and has a generous free tier.
    - Click "Get API Key"
    - Copy your key (looks like: `AIzaSyA...`)
 
-2. **Keep your API key safe** - you'll need it in Step 2!
 
+#### 🔵 **Option 3: OpenAI**
+
+1. **Get an API Key**:
+   - Go to [OpenAI Platform](https://platform.openai.com/)
+   - Click "API Keys"
+   - Create one by clicking "Create new secret key"
+
+**Keep your API key safe** - you'll need it in Step 2!
 ---
 
 ### Step 2: Configure Your Settings
@@ -114,6 +121,11 @@ You can customize these settings:
       "Gemini": {
         "ApiKey": "YOUR-API-KEY-HERE",
         "Model": "gemini-1.5-flash"
+      },
+      "OpenAI": {
+        "ApiKey": "",
+        "Model": "",
+        "OrganizationId": null
       }
     }
   }
@@ -135,7 +147,7 @@ You can customize these settings:
   - `false` = Just show raw logs
 
 - **AIProvider**: Which AI service to use
-  - Options: `"Ollama"` or `"Gemini"` (more coming soon!)
+  - Options: `"Ollama"` or `"Gemini"` or `"OpenAI"` (more coming soon!)
 
 - **PromptFilePath**: Optional path to custom prompt file for advanced users
 
@@ -177,7 +189,6 @@ The analysis report includes:
 
 We're actively working on exciting new features:
 
-- ✅ **OpenAI Integration**: Use GPT models for analysis
 - ✅ **Azure OpenAI**: Enterprise-grade OpenAI for Azure customers
 - 📄 **Export to PDF/Excel**: Download analysis reports
 - 📊 **Trend Analysis**: Track if errors are increasing or decreasing over time

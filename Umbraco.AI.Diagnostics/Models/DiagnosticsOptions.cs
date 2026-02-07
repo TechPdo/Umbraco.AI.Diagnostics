@@ -50,4 +50,9 @@ public class DiagnosticsOptions
     /// Gets or sets Gemini specific settings.
     /// </summary>
     public GeminiSettings? Gemini { get; set; }
+
+    /// <summary>
+    /// Gets or sets OpenAI specific settings.
+    /// </summary>
+    public OpenAISettings? OpenAI { get; set; }
 }
