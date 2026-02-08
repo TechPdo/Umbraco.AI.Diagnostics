@@ -1,4 +1,4 @@
-name: Build – Umbraco.AI.Diagnostics
+name: Umbraco.AI.Diagnostics - Build
 
 on:
   push:
