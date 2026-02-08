@@ -9,78 +9,35 @@ on:
     branches: [ main ]
     paths:
       - 'Umbraco.AI.Diagnostics/**'
-  workflow_dispatch:  # allows manual runs
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # Determine Semantic Version
-      - name: Determine Version
-        id: version
-        uses: paulhatch/semantic-version@v4
-        with:
-          tag_prefix: "v"
-          initial_version: "1.0.4"
-          major_pattern: "BREAKING CHANGE"
-          minor_pattern: "feat"
-          patch_pattern: "fix"
-          format: "${major}.${minor}.${patch}"
-
-      - name: Set VERSION
-        run: echo "VERSION=${{ steps.version.outputs.version }}" >> $GITHUB_ENV
-
-      - name: Print Version
-        run: echo "VERSION = $VERSION"
-        shell: bash
-
-      # Setup .NET 10
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
           include-prerelease: true
 
-      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Build TypeScript Client
       - name: Build TypeScript Client
         working-directory: Umbraco.AI.Diagnostics/Client
         run: |
           npm ci
           npm run build
-        shell: bash
 
-      # Restore & Build .NET
-      - name: Restore .NET Dependencies
+      - name: Restore
         run: dotnet restore Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
 
-      - name: Build .NET Project
-        run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release /p:Version=$VERSION
-        shell: bash
-
-      # Pack NuGet
-      - name: Pack NuGet Package
-        run: dotnet pack Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release -o ./artifacts /p:PackageVersion=$VERSION
-        shell: bash
-
-      # Upload artifacts for manual NuGet publish
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: diagnostics-artifacts
-          path: ./artifacts
+      - name: Build
+        run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release
