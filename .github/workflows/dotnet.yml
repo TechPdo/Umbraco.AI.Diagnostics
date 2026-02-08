@@ -1,7 +1,7 @@
 name: Manual Build – Umbraco.AI.Diagnostics
 
 on:
-  workflow_dispatch:   # 🔹 Only manual runs, no automatic triggers
+  workflow_dispatch:   # Only manual runs
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
         node-version: '20'
 
     - name: Build TypeScript Client
-      working-directory: src/Umbraco.AI.Diagnostics/Client
+      working-directory: Umbraco.AI.Diagnostics/Client
       run: |
         npm ci
         npm run build
@@ -41,7 +41,7 @@ jobs:
     # Restore & Build .NET Project
     # ---------------------------
     - name: Restore .NET Dependencies
-      run: dotnet restore src/Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
+      run: dotnet restore Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
 
     - name: Build .NET Project
-      run: dotnet build src/Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release
+      run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release
