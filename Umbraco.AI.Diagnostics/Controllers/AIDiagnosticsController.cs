@@ -12,7 +12,7 @@ namespace Umbraco.AI.Diagnostics.Controllers
     /// Accessible at: /umbraco/backoffice/umbracoaidiagnostics/api/aidiagnostics
     /// </summary>
     [Route("umbraco/backoffice/umbracoaidiagnostics/api/[controller]")]
-    //[Authorize(Policy = AuthorizationPolicies.SectionAccessContent)]
+    [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     public class AIDiagnosticsController : ControllerBase
     {
         private readonly ILogAnalysisService _logAnalysisService;

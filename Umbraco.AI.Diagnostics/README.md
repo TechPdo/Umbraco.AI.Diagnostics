@@ -86,7 +86,6 @@ Google's Gemini is powerful and has a generous free tier.
    - Click "Get API Key"
    - Copy your key (looks like: `AIzaSyA...`)
 
-
 #### 🔵 **Option 3: OpenAI**
 
 1. **Get an API Key**:
@@ -95,6 +94,7 @@ Google's Gemini is powerful and has a generous free tier.
    - Create one by clicking "Create new secret key"
 
 **Keep your API key safe** - you'll need it in Step 2!
+
 ---
 
 ### Step 2: Configure Your Settings

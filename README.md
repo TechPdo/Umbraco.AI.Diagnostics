@@ -4,6 +4,8 @@
 
 Stop wasting hours reading through log files. Let AI analyze your website's errors and give you clear, actionable solutions in plain English.
 
+[![AI.Diagnostics - CI](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/build.yml/badge.svg)](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/build.yml)
+[![AI.Diagnostics - Release](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/release.yml/badge.svg)](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/release.yml)
 | Package | NuGet |
 | ------- | ----- |
 | AI.Diagnostics | [![NuGet](https://img.shields.io/nuget/v/AI.Diagnostics)](https://www.nuget.org/packages/AI.Diagnostics) [![NuGet downloads](https://img.shields.io/nuget/dt/AI.Diagnostics.svg)](https://www.nuget.org/packages/AI.Diagnostics) |
@@ -22,7 +24,7 @@ If the same error appears 100 times, you'll see it as one issue with a count of 
 Choose from:
 - **Google Gemini** - Cloud-based, powerful, easy to set up
 - **Ollama** - FREE, runs on your own computer, no internet needed
-- **OpenAI** *(coming soon!)*
+- **OpenAI** - Use GPT models for analysis
 - **Azure OpenAI** *(coming soon!)*
 
 ### 🎨 **Beautiful Dashboard**
@@ -90,7 +92,14 @@ Google's Gemini is powerful and has a generous free tier.
    - Click "Get API Key"
    - Copy your key (looks like: `AIzaSyA...`)
 
-2. **Keep your API key safe** - you'll need it in Step 2!
+#### 🔵 **Option 3: OpenAI**
+
+1. **Get an API Key**:
+   - Go to [OpenAI Platform](https://platform.openai.com/)
+   - Click "API Keys"
+   - Create one by clicking "Create new secret key"
+
+**Keep your API key safe** - you'll need it in Step 2!
 
 ---
 
@@ -118,6 +127,11 @@ You can customize these settings:
       "Gemini": {
         "ApiKey": "YOUR-API-KEY-HERE",
         "Model": "gemini-1.5-flash"
+      },
+      "OpenAI": {
+        "ApiKey": "",
+        "Model": "",
+        "OrganizationId": null
       }
     }
   }
@@ -181,7 +195,6 @@ The analysis report includes:
 
 We're actively working on exciting new features:
 
-- ✅ **OpenAI Integration**: Use GPT models for analysis
 - ✅ **Azure OpenAI**: Enterprise-grade OpenAI for Azure customers
 - 📄 **Export to PDF/Excel**: Download analysis reports
 - 📊 **Trend Analysis**: Track if errors are increasing or decreasing over time
