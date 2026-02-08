@@ -1,0 +1,52 @@
+name: Build Only – Umbraco.AI.Diagnostics
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/Umbraco.AI.Diagnostics/**'
+
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/Umbraco.AI.Diagnostics/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # ---------------------------
+    # .NET 10 (Preview) – Umbraco 17
+    # ---------------------------
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        include-prerelease: true
+
+    # ---------------------------
+    # Node / TypeScript
+    # ---------------------------
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Build Client (TypeScript)
+      working-directory: src/Umbraco.AI.Diagnostics/Client
+      run: |
+        npm ci
+        npm run build
+
+    # ---------------------------
+    # Build ONLY Umbraco.AI.Diagnostics
+    # ---------------------------
+    - name: Restore
+      run: dotnet restore src/Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
+
+    - name: Build
+      run: dotnet build src/Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release
