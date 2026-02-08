@@ -1,4 +1,4 @@
-name: Manual NuGet Publish – Umbraco.AI.Diagnostics
+name: Umbraco.AI.Diagnostics - Release
 
 on:
   workflow_dispatch:
