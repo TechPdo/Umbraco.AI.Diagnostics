@@ -1,26 +1,21 @@
-name: Build Only – Umbraco.AI.Diagnostics
+name: Manual Build – Umbraco.AI.Diagnostics
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'src/Umbraco.AI.Diagnostics/**'
-
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'src/Umbraco.AI.Diagnostics/**'
+  workflow_dispatch:   # 🔹 Only manual runs, no automatic triggers
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    # ---------------------------
+    # Checkout the code
+    # ---------------------------
     - name: Checkout
       uses: actions/checkout@v4
 
     # ---------------------------
-    # .NET 10 (Preview) – Umbraco 17
+    # Setup .NET 10 (Umbraco 17)
     # ---------------------------
     - name: Setup .NET 10
       uses: actions/setup-dotnet@v4
@@ -29,24 +24,24 @@ jobs:
         include-prerelease: true
 
     # ---------------------------
-    # Node / TypeScript
+    # Setup Node / TypeScript
     # ---------------------------
-    - name: Setup Node
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
 
-    - name: Build Client (TypeScript)
+    - name: Build TypeScript Client
       working-directory: src/Umbraco.AI.Diagnostics/Client
       run: |
         npm ci
         npm run build
 
     # ---------------------------
-    # Build ONLY Umbraco.AI.Diagnostics
+    # Restore & Build .NET Project
     # ---------------------------
-    - name: Restore
+    - name: Restore .NET Dependencies
       run: dotnet restore src/Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
 
-    - name: Build
+    - name: Build .NET Project
       run: dotnet build src/Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release
