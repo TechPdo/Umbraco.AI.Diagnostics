@@ -9,7 +9,7 @@ on:
     branches: [ main ]
     paths:
       - 'Umbraco.AI.Diagnostics/**'
-  workflow_dispatch:  # also allow manual runs
+  workflow_dispatch:  # allows manual runs
 
 permissions:
   contents: write
@@ -19,68 +19,68 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout code
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      # Checkout code
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    # Semantic Version
-    - name: Determine Version
-      id: version
-      uses: paulhatch/semantic-version@v5
-      with:
-        tag_prefix: "v"
-        initial_version: "1.0.4"
-        major_pattern: "BREAKING CHANGE"
-        minor_pattern: "feat"
-        patch_pattern: "fix"
-        format: "${major}.${minor}.${patch}"
+      # Determine Semantic Version
+      - name: Determine Version
+        id: version
+        uses: paulhatch/semantic-version@v4
+        with:
+          tag_prefix: "v"
+          initial_version: "1.0.4"
+          major_pattern: "BREAKING CHANGE"
+          minor_pattern: "feat"
+          patch_pattern: "fix"
+          format: "${major}.${minor}.${patch}"
 
-    - name: Set VERSION
-      run: echo "VERSION=${{ steps.version.outputs.version }}" >> $GITHUB_ENV
+      - name: Set VERSION
+        run: echo "VERSION=${{ steps.version.outputs.version }}" >> $GITHUB_ENV
 
-    - name: Print Version
-      run: echo "VERSION = $VERSION"
-      shell: bash
+      - name: Print Version
+        run: echo "VERSION = $VERSION"
+        shell: bash
 
-    # Setup .NET
-    - name: Setup .NET 10
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '10.0.x'
-        include-prerelease: true
+      # Setup .NET 10
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
 
-    # Setup Node
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    # Build TypeScript Client
-    - name: Build TypeScript Client
-      working-directory: Umbraco.AI.Diagnostics/Client
-      run: |
-        npm ci
-        npm run build
-      shell: bash
+      # Build TypeScript Client
+      - name: Build TypeScript Client
+        working-directory: Umbraco.AI.Diagnostics/Client
+        run: |
+          npm ci
+          npm run build
+        shell: bash
 
-    # Restore & Build .NET
-    - name: Restore .NET Dependencies
-      run: dotnet restore Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
+      # Restore & Build .NET
+      - name: Restore .NET Dependencies
+        run: dotnet restore Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
 
-    - name: Build .NET Project
-      run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release /p:Version=$VERSION
-      shell: bash
+      - name: Build .NET Project
+        run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release /p:Version=$VERSION
+        shell: bash
 
-    # Pack NuGet
-    - name: Pack NuGet Package
-      run: dotnet pack Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release -o ./artifacts /p:PackageVersion=$VERSION
-      shell: bash
+      # Pack NuGet
+      - name: Pack NuGet Package
+        run: dotnet pack Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release -o ./artifacts /p:PackageVersion=$VERSION
+        shell: bash
 
-    # Upload artifacts for manual NuGet publish
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: diagnostics-artifacts
-        path: ./artifacts
+      # Upload artifacts for manual NuGet publish
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: diagnostics-artifacts
+          path: ./artifacts
