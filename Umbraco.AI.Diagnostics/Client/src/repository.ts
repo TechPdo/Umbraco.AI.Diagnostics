@@ -1,5 +1,6 @@
 import { UmbControllerBase } from '@umbraco-cms/backoffice/class-api';
 import { UmbContextToken } from '@umbraco-cms/backoffice/context-api';
+import { UMB_AUTH_CONTEXT } from '@umbraco-cms/backoffice/auth';
 
 export const UMBRACO_AI_DIAGNOSTICS_REPOSITORY_ALIAS = 'UmbracoAIDiagnostics.Repository';
 
@@ -12,10 +13,13 @@ export class UmbracoAIDiagnosticsRepository extends UmbControllerBase {
 
     async analyzeWithFilters(logLevels: string[], timeRange: string): Promise<{ data: any } | undefined> {
         try {
+            const authContext = await this.getContext(UMB_AUTH_CONTEXT);
+            const token = await authContext?.getLatestToken();
             // POST endpoint with filters
             const response = await fetch('/umbraco/backoffice/umbracoaidiagnostics/api/aidiagnostics/analyze', {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
