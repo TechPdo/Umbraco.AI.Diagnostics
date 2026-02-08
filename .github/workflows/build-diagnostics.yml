@@ -1,12 +1,15 @@
-name: Manual Build & NuGet – Umbraco.AI.Diagnostics
+name: Build – Umbraco.AI.Diagnostics
 
 on:
-  workflow_dispatch:
-    inputs:
-      publishNuget:
-        description: 'Publish to NuGet'
-        required: true
-        default: 'false'
+  push:
+    branches: [ main ]
+    paths:
+      - 'Umbraco.AI.Diagnostics/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Umbraco.AI.Diagnostics/**'
+  workflow_dispatch:  # also allow manual runs
 
 permissions:
   contents: write
@@ -16,15 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # ---------------------------
-    # Checkout
-    # ---------------------------
+    # Checkout code
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-    # ---------------------------
-    # Determine Semantic Version
-    # ---------------------------
+    # Semantic Version
     - name: Determine Version
       id: version
       uses: paulhatch/semantic-version@v5
@@ -36,30 +37,27 @@ jobs:
         patch_pattern: "fix"
         format: "${major}.${minor}.${patch}"
 
-    - name: Set VERSION environment variable
+    - name: Set VERSION
       run: echo "VERSION=${{ steps.version.outputs.version }}" >> $GITHUB_ENV
 
     - name: Print Version
       run: echo "VERSION = $VERSION"
       shell: bash
 
-    # ---------------------------
-    # Setup .NET 10 (Umbraco 17)
-    # ---------------------------
+    # Setup .NET
     - name: Setup .NET 10
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
         include-prerelease: true
 
-    # ---------------------------
-    # Setup Node / TypeScript
-    # ---------------------------
+    # Setup Node
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
 
+    # Build TypeScript Client
     - name: Build TypeScript Client
       working-directory: Umbraco.AI.Diagnostics/Client
       run: |
@@ -67,9 +65,7 @@ jobs:
         npm run build
       shell: bash
 
-    # ---------------------------
-    # Restore & Build .NET Project
-    # ---------------------------
+    # Restore & Build .NET
     - name: Restore .NET Dependencies
       run: dotnet restore Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
 
@@ -77,17 +73,14 @@ jobs:
       run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release /p:Version=$VERSION
       shell: bash
 
-    # ---------------------------
-    # Pack NuGet Package
-    # ---------------------------
-    - name: Pack NuGet
+    # Pack NuGet
+    - name: Pack NuGet Package
       run: dotnet pack Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release -o ./artifacts /p:PackageVersion=$VERSION
       shell: bash
 
-    # ---------------------------
-    # Optional: Publish to NuGet (manual only)
-    # ---------------------------
-    - name: Publish to NuGet
-      if: github.event.inputs.publishNuget == 'true'
-      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-      shell: bash
+    # Upload artifacts for manual NuGet publish
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: diagnostics-artifacts
+        path: ./artifacts
