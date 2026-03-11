@@ -55,4 +55,9 @@ public class DiagnosticsOptions
     /// Gets or sets OpenAI specific settings.
     /// </summary>
     public OpenAISettings? OpenAI { get; set; }
+
+    /// <summary>
+    /// Gets or sets Azure OpenAI specific settings.
+    /// </summary>
+    public AzureOpenAiSettings? AzureOpenAI { get; set; }
 }

@@ -25,7 +25,7 @@ Choose from:
 - **Google Gemini** - Cloud-based, powerful, easy to set up
 - **Ollama** - FREE, runs on your own computer, no internet needed
 - **OpenAI** - Use GPT models for analysis
-- **Azure OpenAI** *(coming soon!)*
+- **Azure OpenAI** - Enterprise-grade OpenAI for Azure customers
 
 ### 🎨 **Beautiful Dashboard**
 Easy-to-use interface right inside your Umbraco admin panel.
@@ -99,6 +99,14 @@ Google's Gemini is powerful and has a generous free tier.
    - Click "API Keys"
    - Create one by clicking "Create new secret key"
 
+#### 🔵 **Option 4: Azure OpenAI**
+
+1. **Get an API Key**:
+   - Go to Azure Portal: [portal.azure.com](https://portal.azure.com/)
+   - Create a Azure OpenAI resource or navigate to your Azure OpenAI resource
+   - Follow the prompts to create an Azure OpenAI resource
+   - Once created, navigate to the resource and copy the API key and configure model
+
 **Keep your API key safe** - you'll need it in Step 2!
 
 ---
@@ -132,12 +140,17 @@ You can customize these settings:
         "ApiKey": "",
         "Model": "",
         "OrganizationId": null
+      },
+      "AzureOpenAI": {
+        "Endpoint": "",
+        "ApiKey": "",
+        "DeploymentName": "",
+        "ApiVersion": ""
       }
     }
   }
 }
 ```
-**Important:** Replace `YOUR-API-KEY-HERE` with your actual API key from Step 1!
 
 **Settings explained:**
 
@@ -153,7 +166,7 @@ You can customize these settings:
   - `false` = Just show raw logs
 
 - **AIProvider**: Which AI service to use
-  - Options: `"Ollama"` or `"Gemini"` (more coming soon!)
+  - Options: `"Ollama"` or `"Gemini"` or `"OpenAI"` or `"AzureOpenAI"`
 
 - **PromptFilePath**: Optional path to custom prompt file for advanced users
 
@@ -195,7 +208,6 @@ The analysis report includes:
 
 We're actively working on exciting new features:
 
-- ✅ **Azure OpenAI**: Enterprise-grade OpenAI for Azure customers
 - 📄 **Export to PDF/Excel**: Download analysis reports
 - 📊 **Trend Analysis**: Track if errors are increasing or decreasing over time
 - 🎨 **Enhanced Visualizations**: More charts and graphs

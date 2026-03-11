@@ -29,8 +29,8 @@ export class UmbracoAIDiagnosticsInstructionsViewElement extends UmbElementMixin
             <ul>
               <li><strong>Google Gemini</strong> - Cloud-based, powerful, easy to set up</li>
               <li><strong>Ollama</strong> - FREE, runs on your own computer, no internet needed</li>
-              <li><strong>OpenAI</strong> (coming soon!)</li>
-              <li><strong>Azure OpenAI</strong> (coming soon!)</li>
+              <li><strong>OpenAI</strong> - Use GPT models for analysis</li>
+              <li><strong>Azure OpenAI</strong> - Enterprise-grade OpenAI for Azure customers</li>
             </ul>
 
             <h4>🎨 Beautiful Dashboard</h4>
@@ -72,6 +72,29 @@ export class UmbracoAIDiagnosticsInstructionsViewElement extends UmbElementMixin
                   <li>Copy your key</li>
                 </ul>
               </li>
+            </ol>
+
+            <h5>🔵 Option 3: OpenAI</h5>
+            <ol>
+              <li>Get an API Key:
+                <ul>
+                  <li>Go to <a href="https://platform.openai.com/" target="_blank">OpenAI Platform</a></li>
+                  <li>Click "API Keys"</li>
+                  <li>Create one by clicking "Create new secret key"</li>
+                </ul>
+              </li>
+            </ol>
+
+            <h5>🔵 Option 4: Azure OpenAI</h5>
+            <ol>
+              <li>Get an API Key:
+                <ul>
+                  <li>Go to <a href="https://portal.azure.com/" target="_blank">Azure Portal</a></li>
+                  <li>Create a Azure OpenAI resource or navigate to your Azure OpenAI resource</li>
+                  <li>Follow the prompts to create an Azure OpenAI resource</li>
+                  <li>Once created, navigate to the resource and copy the API key and configure model</li>
+                </ul>
+              </li>
               <li>Keep your API key safe — you'll need it in Step 2</li>
             </ol>
 
@@ -94,6 +117,17 @@ export class UmbracoAIDiagnosticsInstructionsViewElement extends UmbElementMixin
       "Gemini": {
         "ApiKey": "YOUR-API-KEY-HERE",
         "Model": "gemini-1.5-flash"
+      },
+      "OpenAI": {
+        "ApiKey": "",
+        "Model": "",
+        "OrganizationId": null
+      },
+      "AzureOpenAI": {
+        "Endpoint": "",
+        "ApiKey": "",
+        "DeploymentName": "",
+        "ApiVersion": ""
       }
     }
   }
@@ -152,8 +186,6 @@ export class UmbracoAIDiagnosticsInstructionsViewElement extends UmbElementMixin
           <section class="instruction-section">
             <h3>🚀 Coming Soon</h3>
             <ul>
-              <li>OpenAI Integration</li>
-              <li>Azure OpenAI</li>
               <li>Export to PDF/Excel</li>
               <li>Trend Analysis</li>
               <li>Enhanced Visualizations</li>
