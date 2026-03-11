@@ -1,0 +1,82 @@
+name: Umbraco.AI.Diagnostics - Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish'
+        required: true
+        default: '1.0.4'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Set version
+      - name: Set VERSION
+        run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+
+      # Setup .NET
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+
+      # Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Build TypeScript
+      - name: Build TypeScript Client
+        working-directory: Umbraco.AI.Diagnostics/Client
+        run: |
+          npm ci
+          npm run build
+
+      # Restore
+      - name: Restore
+        run: dotnet restore Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj
+
+      # Build
+      - name: Build
+        run: dotnet build Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release /p:Version=$VERSION
+
+      # Pack
+      - name: Pack
+        run: dotnet pack Umbraco.AI.Diagnostics/Umbraco.AI.Diagnostics.csproj -c Release -o ./artifacts /p:PackageVersion=$VERSION
+
+      # Create Tag
+      - name: Create Tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag v$VERSION
+          git push origin v$VERSION
+
+      # Create GitHub Release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ env.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish NuGet
+      - name: Publish NuGet
+        run: |
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json
