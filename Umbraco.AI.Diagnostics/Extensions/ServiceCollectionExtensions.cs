@@ -32,6 +32,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<OllamaClient>();
         services.AddHttpClient<GeminiClient>();
         services.AddHttpClient<OpenAIClient>();
+        services.AddHttpClient<AzureOpenAIClient>();
 
         // Register the appropriate AI client based on configuration
         services.AddScoped<IAIClient>(serviceProvider =>
@@ -45,6 +46,7 @@ public static class ServiceCollectionExtensions
                 "ollama" => serviceProvider.GetRequiredService<OllamaClient>(),
                 "gemini" => serviceProvider.GetRequiredService<GeminiClient>(),
                 "openai" => serviceProvider.GetRequiredService<OpenAIClient>(),
+                "azureopenai" => serviceProvider.GetRequiredService<AzureOpenAIClient>(),
                 _ => serviceProvider.GetRequiredService<GeminiClient>() // default
             };
         });
@@ -75,6 +77,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<OllamaClient>();
         services.AddHttpClient<GeminiClient>();
         services.AddHttpClient<OpenAIClient>();
+        services.AddHttpClient<AzureOpenAIClient>();
 
         // Register the appropriate AI client based on configuration
         services.AddScoped<IAIClient>(serviceProvider =>
@@ -87,6 +90,7 @@ public static class ServiceCollectionExtensions
                 "ollama" => serviceProvider.GetRequiredService<OllamaClient>(),
                 "gemini" => serviceProvider.GetRequiredService<GeminiClient>(),
                 "openai" => serviceProvider.GetRequiredService<OpenAIClient>(),
+                "azureopenai" => serviceProvider.GetRequiredService<AzureOpenAIClient>(),
                 _ => serviceProvider.GetRequiredService<GeminiClient>() // default
             };
         });
