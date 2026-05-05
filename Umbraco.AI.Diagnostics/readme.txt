@@ -5,16 +5,10 @@ Quick configuration (appsettings.json) — diagnostics keys under AI:Diagnostics
 
   "AI": {
     "Diagnostics": {
-      "LogLevels": [ "Error", "Fatal", "Warning" ],
       "MaxBatchSize": 100,
       "EnableAI": true,
       "UmbracoAiProfileAlias": "your-chat-profile-alias",
       "PromptFilePath": "prompt/analysis-prompt.txt",
-      "Seed": {
-        "Enabled": false,
-        "Google": { "ApiKey": "" },
-        "AzureOpenAI": { "ApiKey": "", "Endpoint": "", "ChatDeploymentName": "gpt-4o" }
-      }
     }
   }
 
