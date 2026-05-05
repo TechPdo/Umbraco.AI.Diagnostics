@@ -11,10 +11,10 @@ public class DiagnosticsOptions
     public const string SectionName = "AI:Diagnostics";
 
     /// <summary>
-    /// Gets or sets the log levels to analyze (e.g., Error, Critical, Warning).
-    /// Default: Error, Critical.
+    /// Gets or sets the log levels to analyze (Umbraco / Serilog names: Verbose, Debug, Information, Warning, Error, Fatal).
+    /// Default: Error, Fatal. The value <c>Critical</c> in config is accepted and mapped to <c>Fatal</c> when querying the log viewer.
     /// </summary>
-    public List<string> LogLevels { get; set; } = new() { "Error", "Critical" };
+    public List<string> LogLevels { get; set; } = new() { "Error", "Fatal" };
 
     /// <summary>
     /// Gets or sets the maximum number of logs to process in a single batch.
@@ -30,34 +30,14 @@ public class DiagnosticsOptions
     public bool EnableAI { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets the AI provider to use (AzureOpenAI, OpenAI, Ollama, Gemini).
-    /// Default: Gemini.
+    /// Gets or sets optional Umbraco.AI chat profile alias to use for diagnostics.
+    /// When null or empty, the site's default chat profile from Umbraco.AI settings is used.
     /// </summary>
-    public string AIProvider { get; set; } = "Gemini";
+    public string? UmbracoAiProfileAlias { get; set; }
 
     /// <summary>
     /// Gets or sets the path to the standard prompt file.
     /// Default: prompts/analysis-prompt.txt.
     /// </summary>
     public string PromptFilePath { get; set; } = "prompt/analysis-prompt.txt";
-
-    /// <summary>
-    /// Gets or sets Ollama specific settings.
-    /// </summary>
-    public OllamaSettings? Ollama { get; set; }
-
-    /// <summary>
-    /// Gets or sets Gemini specific settings.
-    /// </summary>
-    public GeminiSettings? Gemini { get; set; }
-
-    /// <summary>
-    /// Gets or sets OpenAI specific settings.
-    /// </summary>
-    public OpenAISettings? OpenAI { get; set; }
-
-    /// <summary>
-    /// Gets or sets Azure OpenAI specific settings.
-    /// </summary>
-    public AzureOpenAiSettings? AzureOpenAI { get; set; }
 }

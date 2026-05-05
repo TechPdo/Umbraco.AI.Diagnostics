@@ -12,7 +12,12 @@
   "IsSubPackageOf": "",
   "PackageType": "Package",
   "PackagesByAuthor": [],
-  "RelatedPackages": [],
+  "RelatedPackages": [
+    {
+      "PackageId": "Umbraco.AI",
+      "Description": "Required: install Umbraco.AI and at least one provider package, then configure connections and chat profiles in the backoffice."
+    }
+  ],
   "LicenseTypes": [ "Free" ],
   "Tags": [ "umbraco", "plugin", "package", "umbraco-marketplace", "Artificial Intelligence", "AI" ],
   "Title": "AI Diagnostics",

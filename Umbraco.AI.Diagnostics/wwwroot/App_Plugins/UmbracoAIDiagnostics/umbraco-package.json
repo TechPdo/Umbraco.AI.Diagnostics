@@ -51,14 +51,14 @@
     },
     {
       "type": "workspaceView",
-      "alias": "UmbracoAIDiagnostics.InstructionsView",
-      "name": "Umbraco AI Diagnostics Instructions View",
-      "element": "/App_Plugins/UmbracoAIDiagnostics/instructions-view.js",
-      "weight": 100,
+      "alias": "UmbracoAIDiagnostics.TrendAnalysisView",
+      "name": "Trend Analysis",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/trend-analysis-view.js",
+      "weight": 150,
       "meta": {
-        "label": "Instructions",
-        "pathname": "instructions",
-        "icon": "icon-info"
+        "label": "Trend Analysis",
+        "pathname": "trend-analysis",
+        "icon": "icon-chart"
       },
       "conditions": [
         {
@@ -66,6 +66,36 @@
           "match": "UmbracoAIDiagnostics.Workspace"
         }
       ]
+    },
+    {
+      "type": "workspaceView",
+      "alias": "UmbracoAIDiagnostics.VisualizationsView",
+      "name": "Visualizations",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/visualizations-view.js",
+      "weight": 140,
+      "meta": {
+        "label": "Visualizations",
+        "pathname": "visualizations",
+        "icon": "icon-pie-chart"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.WorkspaceAlias",
+          "match": "UmbracoAIDiagnostics.Workspace"
+        }
+      ]
+    },
+    {
+      "type": "entryPoint",
+      "alias": "UmbracoAIDiagnostics.LogViewerSearchEnhancer",
+      "name": "Log Viewer Search AI Analysis Enhancer",
+      "js": "/App_Plugins/UmbracoAIDiagnostics/log-viewer-search-enhancer.js"
+    },
+    {
+      "type": "modal",
+      "alias": "UmbracoAIDiagnostics.Modal.LogAnalysis",
+      "name": "Log Analysis Modal",
+      "element": "/App_Plugins/UmbracoAIDiagnostics/log-analysis-modal.element.js"
     },
     {
       "type": "repository",

@@ -1,7 +1,24 @@
 import { UmbElementMixin } from '@umbraco-cms/backoffice/element-api';
-import { LitElement, html, css, customElement, state } from '@umbraco-cms/backoffice/external/lit';
+import { LitElement, html, css, customElement, state, unsafeHTML } from '@umbraco-cms/backoffice/external/lit';
+import { analysisMarkdownContentStyles, renderAnalysisMarkdown } from './analysis-markdown';
+import type { ChatProfileOptionDto, ChatProfilesResponse } from './repository';
 import { UmbracoAIDiagnosticsRepository } from './repository';
-import { unsafeHTML } from '@umbraco-cms/backoffice/external/lit';
+
+function pickDefaultChatProfileAlias(data: ChatProfilesResponse | undefined): string {
+    const profiles = data?.profiles ?? [];
+    if (profiles.length === 0) {
+        return '';
+    }
+    const explicit = data?.defaultProfileAlias?.trim();
+    if (explicit && profiles.some((p) => p.alias === explicit)) {
+        return explicit;
+    }
+    const marked = profiles.find((p) => p.isDefault);
+    if (marked) {
+        return marked.alias;
+    }
+    return profiles[0]!.alias;
+}
 
 @customElement('umbraco-ai-diagnostics-workspace-view')
 export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(LitElement) {
@@ -16,7 +33,7 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
     private _report: any = null;
 
     @state()
-    private _criticalChecked: boolean = true;
+    private _fatalChecked: boolean = true;
 
     @state()
     private _errorChecked: boolean = true;
@@ -27,127 +44,49 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
     @state()
     private _timeRange: string = '1hour';
 
+    /** Selected chat profile alias (site default is chosen automatically when profiles load). */
+    @state()
+    private _profileAlias: string = '';
+
+    @state()
+    private _profiles: ChatProfileOptionDto[] = [];
+
+    @state()
+    private _profilesError: string = '';
+
     #repository?: UmbracoAIDiagnosticsRepository;
+
+    #chatProfilesLoaded = false;
 
     constructor() {
         super();
         this.#repository = new UmbracoAIDiagnosticsRepository(this);
     }
 
-    // Add the markdown rendering function
-    private renderMarkdown(text: string): string {
-        if (!text) return '';
+    override connectedCallback(): void {
+        super.connectedCallback();
+        if (!this.#chatProfilesLoaded) {
+            this.#chatProfilesLoaded = true;
+            void this.#loadChatProfiles();
+        }
+    }
 
-        let html = text;
-
-        // Code blocks (must be before inline code)
-        html = html.replace(/```(\w+)?\r?\n([\s\S]*?)```/g, (_, lang, code) => {
-            // Escape HTML in code blocks only
-            const escapedCode = code
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
-            return `<pre><code class="language-${lang || 'plaintext'}">${escapedCode.trim()}</code></pre>`;
-        });
-
-        // Inline code
-        html = html.replace(/`([^`]+)`/g, (_, code) => {
-            const escapedCode = code
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
-            return `<code>${escapedCode}</code>`;
-        });
-
-        // Bold (must be before italic) - NON-GREEDY matching
-        html = html.replace(/\*\*([^\*]+?)\*\*/g, '<strong>$1</strong>');
-        html = html.replace(/__([^_]+?)__/g, '<strong>$1</strong>');
-
-        // Italic - NON-GREEDY matching
-        html = html.replace(/\*([^\*]+?)\*/g, '<em>$1</em>');
-        html = html.replace(/_([^_]+?)_/g, '<em>$1</em>');
-
-        // Strikethrough
-        html = html.replace(/~~(.+?)~~/g, '<del>$1</del>');
-
-        // Headers (must be processed before paragraphs)
-        html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
-        html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>');
-        html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
-        html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
-        html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
-        html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
-
-        // Links
-        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-
-        // Images
-        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
-
-        // Blockquotes
-        html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
-
-        // Horizontal rules
-        html = html.replace(/^---$/gm, '<hr>');
-        html = html.replace(/^\*\*\*$/gm, '<hr>');
-
-        // Unordered lists - improved handling
-        const unorderedListRegex = /(?:^\*\s+.+$\n?)+/gm;
-        html = html.replace(unorderedListRegex, (match) => {
-            const items = match.split('\n').filter(line => line.trim());
-            const listItems = items.map(item => {
-                const content = item.replace(/^\*\s+/, '');
-                return `<li>${content}</li>`;
-            }).join('');
-            return `<ul>${listItems}</ul>`;
-        });
-
-        // Also handle lists with dashes
-        const dashListRegex = /(?:^-\s+.+$\n?)+/gm;
-        html = html.replace(dashListRegex, (match) => {
-            const items = match.split('\n').filter(line => line.trim());
-            const listItems = items.map(item => {
-                const content = item.replace(/^-\s+/, '');
-                return `<li>${content}</li>`;
-            }).join('');
-            return `<ul>${listItems}</ul>`;
-        });
-
-        // Ordered lists - improved handling
-        const orderedListRegex = /(?:^\d+\.\s+.+$\n?)+/gm;
-        html = html.replace(orderedListRegex, (match) => {
-            const items = match.split('\n').filter(line => line.trim());
-            const listItems = items.map(item => {
-                const content = item.replace(/^\d+\.\s+/, '');
-                return `<li>${content}</li>`;
-            }).join('');
-            return `<ol>${listItems}</ol>`;
-        });
-
-        // Line breaks and paragraphs (do this last)
-        html = html.replace(/\n\n+/g, '</p><p>');
-        html = html.replace(/\n/g, '<br>');
-
-        // Wrap content in paragraph if it doesn't start with a block element
-        if (!html.match(/^<(h[1-6]|ul|ol|pre|blockquote|hr)/)) {
-            html = `<p>${html}</p>`;
+    async #loadChatProfiles() {
+        if (!this.#repository) {
+            return;
         }
 
-        // Clean up - remove p tags around block elements
-        html = html.replace(/<p>(<h[1-6]>)/g, '$1');
-        html = html.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
-        html = html.replace(/<p>(<ul>)/g, '$1');
-        html = html.replace(/(<\/ul>)<\/p>/g, '$1');
-        html = html.replace(/<p>(<ol>)/g, '$1');
-        html = html.replace(/(<\/ol>)<\/p>/g, '$1');
-        html = html.replace(/<p>(<pre>)/g, '$1');
-        html = html.replace(/(<\/pre>)<\/p>/g, '$1');
-        html = html.replace(/<p>(<blockquote>)/g, '$1');
-        html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
-        html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
-        html = html.replace(/<p><\/p>/g, '');
+        this._profilesError = '';
+        const result = await this.#repository.getChatProfiles();
+        if (result.error) {
+            this._profilesError = result.error;
+            this._profiles = [];
+            this._profileAlias = '';
+            return;
+        }
 
-        return html;
+        this._profiles = result.data?.profiles ?? [];
+        this._profileAlias = pickDefaultChatProfileAlias(result.data);
     }
 
     async #handleAnalyze() {
@@ -164,7 +103,7 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
         try {
             // Collect selected log levels
             const logLevels: string[] = [];
-            if (this._criticalChecked) logLevels.push('Critical');
+            if (this._fatalChecked) logLevels.push('Fatal');
             if (this._errorChecked) logLevels.push('Error');
             if (this._warningChecked) logLevels.push('Warning');
 
@@ -175,7 +114,11 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
             }
 
             // Call the repository method with filters
-            const result = await this.#repository.analyzeWithFilters(logLevels, this._timeRange);
+            const result = await this.#repository.analyzeWithFilters(
+                logLevels,
+                this._timeRange,
+                this._profileAlias,
+            );
 
             if (result) {
                 this._report = result.data;
@@ -190,9 +133,9 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
         this._loading = false;
     }
 
-    #handleCriticalChange(e: Event) {
+    #handleFatalChange(e: Event) {
         const checkbox = e.target as HTMLInputElement;
-        this._criticalChecked = checkbox.checked;
+        this._fatalChecked = checkbox.checked;
     }
 
     #handleErrorChange(e: Event) {
@@ -211,6 +154,11 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
         console.log('Time range changed to:', this._timeRange);
     }
 
+    #handleProfileChange(e: Event) {
+        const select = e.target as HTMLSelectElement;
+        this._profileAlias = select.value;
+    }
+
     private renderFilters() {
         return html`
       <uui-box headline="Analysis Filters">
@@ -221,9 +169,9 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
           
           <div class="checkboxes-group">
             <uui-checkbox
-              label="Critical"
-              .checked=${this._criticalChecked}
-              @change=${this.#handleCriticalChange}
+              label="Fatal"
+              .checked=${this._fatalChecked}
+              @change=${this.#handleFatalChange}
             ></uui-checkbox>
             
             <uui-checkbox
@@ -257,6 +205,29 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
             </select>
           </div>
 
+          <div class="label-group">
+            <label>Chat profile:</label>
+          </div>
+
+          <div class="dropdown-group profile-dropdown-group">
+            <select
+              class="time-range-select"
+              .value=${this._profileAlias}
+              @change=${this.#handleProfileChange}
+              ?disabled=${this._profiles.length === 0}
+            >
+              ${this._profiles.map(
+                (p) => html`
+                  <option value=${p.alias}>${p.name?.trim() || p.alias}</option>
+                `,
+              )}
+            </select>
+          </div>
+
+          ${this._profilesError
+            ? html`<span class="profiles-error" title=${this._profilesError}>Profile list unavailable</span>`
+            : ''}
+
           <div class="button-group">
             <uui-button
               look="primary"
@@ -287,7 +258,7 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
           
           ${this._report.aiSummary ? html`
             <uui-box headline="AI Summary">
-              <div class="ai-summary markdown-content">${unsafeHTML(this.renderMarkdown(this._report.aiSummary))}</div>
+              <div class="ai-summary markdown-content">${unsafeHTML(renderAnalysisMarkdown(this._report.aiSummary))}</div>
             </uui-box>
           ` : ''}
           
@@ -296,9 +267,9 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
               ${this._report.logAnalysisItems.map((item: any) => html`
                 <uui-box>
                   <div class="inline">
-                    <uui-badge color="danger">${item.logEntry?.level || 'Unknown'}</uui-badge>
+                    <uui-badge color="danger">${item.logEntry?.level ?? item.logEntry?.Level ?? 'Unknown'}</uui-badge>
                     <uui-tag>${item.occurrenceCount || 1} occurrences</uui-tag>
-                    <uui-badge color="danger">${item.logEntry?.severityAssessment || 'Unknown'}</uui-badge>
+                    <uui-badge color="danger">${item.severityAssessment || 'Unknown'}</uui-badge>
                   </div>
                   <p>
                     <strong>${item.logEntry?.timestamp ? new Date(item.logEntry.timestamp).toLocaleString() : 'No timestamp'}</strong>
@@ -308,7 +279,7 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
                   ${item.likelyCause ? html`
                     <div class="markdown-content">
                       <strong>Likely cause:</strong>
-                      <div>${unsafeHTML(this.renderMarkdown(item.likelyCause))}</div>
+                      <div>${unsafeHTML(renderAnalysisMarkdown(item.likelyCause))}</div>
                     </div>
                   ` : ''}
                   
@@ -317,7 +288,7 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
                       <strong>Suggested fixes:</strong>
                       <div>
                         ${item.suggestedFixes.map((fix: string) => html`
-                          <div class="fix-item">${unsafeHTML(this.renderMarkdown(fix))}</div>
+                          <div class="fix-item">${unsafeHTML(renderAnalysisMarkdown(fix))}</div>
                         `)}
                       </div>
                     </div>
@@ -358,7 +329,9 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
     `;
     }
 
-    static styles = css`
+    static styles = [
+        analysisMarkdownContentStyles,
+        css`
     :host {
       display: block;
       padding: var(--uui-size-space-5);
@@ -403,6 +376,19 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
       align-items: center;
       width: 180px;
       margin-right: var(--uui-size-space-4);
+    }
+
+    .profile-dropdown-group {
+      width: min(280px, 42vw);
+    }
+
+    .profiles-error {
+      font-size: 0.75rem;
+      color: var(--uui-color-danger);
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .dropdown-group uui-select {
@@ -538,94 +524,11 @@ export class UmbracoAIDiagnosticsWorkspaceViewElement extends UmbElementMixin(Li
       font-weight: 600;
     }
 
-    /* Markdown content styles */
-    .markdown-content {
-      line-height: 1.6;
-    }
-
-    .markdown-content p {
-      margin: var(--uui-size-space-2) 0;
-    }
-
-    .markdown-content strong {
-      font-weight: 600;
-    }
-
-    .markdown-content em {
-      font-style: italic;
-    }
-
-    .markdown-content code {
-      background: var(--uui-color-surface-alt);
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9em;
-    }
-
-    .markdown-content pre {
-      background: var(--uui-color-surface-alt);
-      padding: var(--uui-size-space-3);
-      border-radius: var(--uui-border-radius);
-      overflow-x: auto;
-      margin: var(--uui-size-space-3) 0;
-    }
-
-    .markdown-content pre code {
-      background: none;
-      padding: 0;
-    }
-
-    .markdown-content ul,
-    .markdown-content ol {
-      margin: var(--uui-size-space-2) 0;
-      padding-left: var(--uui-size-space-5);
-    }
-
-    .markdown-content li {
-      margin-bottom: var(--uui-size-space-1);
-    }
-
-    .markdown-content h1,
-    .markdown-content h2,
-    .markdown-content h3,
-    .markdown-content h4,
-    .markdown-content h5,
-    .markdown-content h6 {
-      margin: var(--uui-size-space-3) 0 var(--uui-size-space-2) 0;
-      font-weight: 600;
-    }
-
-    .markdown-content h1 { font-size: 1.5em; }
-    .markdown-content h2 { font-size: 1.3em; }
-    .markdown-content h3 { font-size: 1.1em; }
-
-    .markdown-content blockquote {
-      border-left: 3px solid var(--uui-color-border);
-      padding-left: var(--uui-size-space-3);
-      margin: var(--uui-size-space-3) 0;
-      color: var(--uui-color-text-alt);
-    }
-
-    .markdown-content hr {
-      border: none;
-      border-top: 1px solid var(--uui-color-border);
-      margin: var(--uui-size-space-4) 0;
-    }
-
-    .markdown-content a {
-      color: var(--uui-color-interactive);
-      text-decoration: none;
-    }
-
-    .markdown-content a:hover {
-      text-decoration: underline;
-    }
-
     .fix-item {
       margin-bottom: var(--uui-size-space-2);
     }
-  `;
+  `,
+    ];
 }
 
 export default UmbracoAIDiagnosticsWorkspaceViewElement;

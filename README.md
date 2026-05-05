@@ -6,6 +6,7 @@ Stop wasting hours reading through log files. Let AI analyze your website's erro
 
 [![AI.Diagnostics - CI](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/build.yml/badge.svg)](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/build.yml)
 [![AI.Diagnostics - Release](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/release.yml/badge.svg)](https://github.com/TechPdo/Umbraco.AI.Diagnostics/actions/workflows/release.yml)
+
 | Package | NuGet |
 | ------- | ----- |
 | AI.Diagnostics | [![NuGet](https://img.shields.io/nuget/v/AI.Diagnostics)](https://www.nuget.org/packages/AI.Diagnostics) [![NuGet downloads](https://img.shields.io/nuget/dt/AI.Diagnostics.svg)](https://www.nuget.org/packages/AI.Diagnostics) |
@@ -21,11 +22,7 @@ Your logs are analyzed by powerful AI models that understand common web applicat
 If the same error appears 100 times, you'll see it as one issue with a count of "100" - not 100 separate items!
 
 ### 🎯 **Multiple AI Options**
-Choose from:
-- **Google Gemini** - Cloud-based, powerful, easy to set up
-- **Ollama** - FREE, runs on your own computer, no internet needed
-- **OpenAI** - Use GPT models for analysis
-- **Azure OpenAI** - Enterprise-grade OpenAI for Azure customers
+AI is provided through **[Umbraco.AI](https://docs.umbraco.com/ai-in-umbraco)**. Install provider packages (for example **Google Gemini**, **OpenAI**, **Azure OpenAI**, or others supported by Umbraco.AI) and configure them in the backoffice **AI** section—no `AIProvider` or provider API keys inside `AI:Diagnostics` anymore.
 
 ### 🎨 **Beautiful Dashboard**
 Easy-to-use interface right inside your Umbraco admin panel.
@@ -62,113 +59,78 @@ Install-Package AI.Diagnostics
 4. Search for: `AI.Diagnostics`
 5. Click "Install"
 
+Installing **`AI.Diagnostics`** also brings in the **`Umbraco.AI`** NuGet dependency. You still add **at least one Umbraco.AI provider package** on your site (see configuration below).
+
 ---
 
 ## ⚙️ Configuration
 
-### Step 1: Choose Your AI Provider
+### How AI is wired: **Umbraco.AI**
 
-You need to pick ONE of these options:
+This package **does not** embed Gemini, OpenAI, Ollama, or Azure clients in `appsettings.json` the way older versions did. Instead:
 
-#### 🟢 **Option 1: Ollama (FREE - Recommended for Beginners)**
-
-Ollama runs AI on your own computer - completely free!
-
-1. **Download Ollama**: Visit [ollama.com](https://ollama.com) and download it
-2. **Install and start Ollama**: Just run the installer
-3. **Download an AI model**: Open your terminal and run:
-   ```bash
-   ollama pull llama3
-   ```
-
-That's it! Ollama will run in the background.
-
-#### 🔵 **Option 2: Google Gemini (Easy Cloud Setup)**
-
-Google's Gemini is powerful and has a generous free tier.
-
-1. **Get an API Key**:
-   - Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Click "Get API Key"
-   - Copy your key (looks like: `AIzaSyA...`)
-
-#### 🔵 **Option 3: OpenAI**
-
-1. **Get an API Key**:
-   - Go to [OpenAI Platform](https://platform.openai.com/)
-   - Click "API Keys"
-   - Create one by clicking "Create new secret key"
-
-#### 🔵 **Option 4: Azure OpenAI**
-
-1. **Get an API Key**:
-   - Go to Azure Portal: [portal.azure.com](https://portal.azure.com/)
-   - Create a Azure OpenAI resource or navigate to your Azure OpenAI resource
-   - Follow the prompts to create an Azure OpenAI resource
-   - Once created, navigate to the resource and copy the API key and configure model
-
-**Keep your API key safe** - you'll need it in Step 2!
+- **`AI.Diagnostics`** depends on **`Umbraco.AI`** (see your `.csproj` / NuGet after install).
+- **Connections, models, and API keys** live in **Umbraco.AI** (backoffice **AI** section and [Umbraco.AI configuration](https://github.com/umbraco/Umbraco.AI/blob/dev/docs/public/getting-started/configuration.md)).
+- **`AI:Diagnostics`** only holds **diagnostics behaviour** (batch size, optional chat profile alias, prompt path, etc.). Log levels are chosen in the backoffice for each analysis.
 
 ---
 
-### Step 2: Configure Your Settings
+### Step 1: Install Umbraco.AI providers and set up the backoffice
 
-Open the file called `appsettings.json` in your Umbraco project and add this section:
+1. Add provider packages compatible with your **`Umbraco.AI`** version, for example:
+   ```bash
+   dotnet add package Umbraco.AI.Google
+   dotnet add package Umbraco.AI.OpenAI
+   ```
+2. Open the **AI** section in the Umbraco backoffice.
+3. Create a **connection**, a **chat profile**, and set a **default chat profile** (or use `UmbracoAiProfileAlias` in Step 2).
 
-#### Configuration Options
+*(You can still use free/local or cloud models—whatever your chosen **Umbraco.AI** providers support.)*
 
-You can customize these settings:
+---
+
+### Step 2: Configure `appsettings.json` (`AI:Diagnostics`)
+
+Open **`appsettings.json`** in your Umbraco project and add or merge this section.
+
+#### Example
 
 ```json
 {
   "AI": {
     "Diagnostics": {
-      "LogLevels": ["Error", "Critical"],
       "MaxBatchSize": 100,
       "EnableAI": true,
-      "AIProvider": "Ollama",
-      "PromptFilePath": "prompt/analysis-prompt.txt",
-      "Ollama": {
-        "Endpoint": "http://localhost:11434",
-        "Model": "llama3"
-      },
-      "Gemini": {
-        "ApiKey": "YOUR-API-KEY-HERE",
-        "Model": "gemini-1.5-flash"
-      },
-      "OpenAI": {
-        "ApiKey": "",
-        "Model": "",
-        "OrganizationId": null
-      },
-      "AzureOpenAI": {
-        "Endpoint": "",
-        "ApiKey": "",
-        "DeploymentName": "",
-        "ApiVersion": ""
-      }
+      "UmbracoAiProfileAlias": "my-diagnostics-profile",
+      "PromptFilePath": "prompt/analysis-prompt.txt"
     }
   }
 }
 ```
 
-**Settings explained:**
+- Omit **`UmbracoAiProfileAlias`** (or leave it empty) to use the **default chat profile** from Umbraco.AI.
+- **Log levels** for each run are chosen in the backoffice (Umbraco / Serilog names: `Verbose`, `Debug`, `Information`, `Warning`, `Error`, `Fatal`). **`Critical`** is treated as **`Fatal`** when querying the log viewer.
 
-- **LogLevels**: Which severity levels to analyze
-  - Options: `"Trace"`, `"Debug"`, `"Information"`, `"Warning"`, `"Error"`, `"Critical"`
-  - Default: `["Error", "Critical", "Warning"]`
+#### Default values (if you skip a key)
 
-- **MaxBatchSize**: Maximum number of unique issues to analyze at once
-  - Default: 100
+These defaults come from **`DiagnosticsOptions`** in the package (`AI:Diagnostics` binding):
 
-- **EnableAI**: Turn AI analysis on/off
-  - `true` = AI analysis enabled
-  - `false` = Just show raw logs
+| Setting | Default |
+| --------|--------|
+| **MaxBatchSize** | `100` |
+| **EnableAI** | `true` |
+| **UmbracoAiProfileAlias** | *(empty → use Umbraco.AI default chat profile)* |
+| **PromptFilePath** | `prompt/analysis-prompt.txt` |
 
-- **AIProvider**: Which AI service to use
-  - Options: `"Ollama"` or `"Gemini"` or `"OpenAI"` or `"AzureOpenAI"`
+#### Settings explained
 
-- **PromptFilePath**: Optional path to custom prompt file for advanced users
+- **Log levels** are not set in `appsettings.json`; pick them in the AI Diagnostics UI (or API) for each analysis.
+- **MaxBatchSize**: Maximum number of **unique** issues to analyze in one batch.
+- **EnableAI**: `true` = call AI through Umbraco.AI; `false` = grouped logs without AI calls.
+- **UmbracoAiProfileAlias**: Optional Umbraco.AI **chat profile alias**. If not set, the site **default chat profile** is used.
+- **PromptFilePath**: Optional custom analysis prompt file under the site content root.
+
+> **Note:** Older docs used **`AIProvider`**, **`Gemini`**, **`Ollama`**, **`OpenAI`**, **`AzureOpenAI`** under `AI:Diagnostics`. **That shape is removed.** Configure providers only through **Umbraco.AI**.
 
 ---
 
@@ -178,10 +140,12 @@ You can customize these settings:
 2. **Log in** to the Umbraco admin panel (the backoffice)
 3. Click on **"Settings"** in the left menu
 4. Click **"AI Diagnostics"**
-5. Choose which types of errors to analyze (Error, Critical, or Warning)
+5. Choose which types of errors to analyze (**Error**, **Warning**, **Fatal**)
 6. Select a time range (last hour, day, week, etc.)
 7. Click the big **"Analyze Logs"** button
 8. Wait a few seconds while AI does its magic! ✨
+
+You can also open **Settings → Log Viewer → Search** and use **AI Analysis** on individual rows (for **Error**, **Warning**, or **Fatal**) when the log viewer filter matches.
 
 ---
 
@@ -239,7 +203,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 Built with:
 - ❤️ Love for the Umbraco community
-- 🤖 Powered by AI (Gemini, Ollama, and more!)
+- 🤖 Powered by **Umbraco.AI** and your chosen providers
 - ☕ Lots of coffee
 
 ---

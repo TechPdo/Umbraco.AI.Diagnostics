@@ -11,7 +11,7 @@ public class LogEntry
     public DateTime Timestamp { get; set; }
 
     /// <summary>
-    /// Gets or sets the log level (e.g., Error, Critical, Warning).
+    /// Gets or sets the log level (e.g., Error, Fatal, Warning; aligned with Umbraco log viewer / Serilog).
     /// </summary>
     public string Level { get; set; } = string.Empty;
 
@@ -54,7 +54,7 @@ public class LogEntry
         {
             $"[{Timestamp:yyyy-MM-dd HH:mm:ss}]",
             $"[{Level}]",
-            Message
+            Message ?? string.Empty
         };
 
         if (!string.IsNullOrEmpty(Exception))
