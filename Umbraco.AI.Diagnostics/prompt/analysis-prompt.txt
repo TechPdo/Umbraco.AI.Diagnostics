@@ -17,6 +17,7 @@ Respond ONLY with valid JSON in the following format (no markdown formatting):
   "items": [
     {
       "logDate": "The original log date",
+      "logLevel": "The log level from that entry (Verbose, Debug, Information, Warning, Error, or Fatal — copy from the log line)",
       "logMessage": "The original log message (shortened if too long)",
       "likelyCause": "Detailed explanation of what likely caused this error",
       "suggestedFixes": [
@@ -35,6 +36,7 @@ Respond ONLY with valid JSON in the following format (no markdown formatting):
 }
 
 Guidelines:
+- Every item must include logLevel taken from the bracketed level in each log line (e.g. [Error], [Warning], [Information]).
 - Focus on Umbraco-specific issues (content types, templates, configuration, cache, database)
 - Consider .NET 10 and C# 14 specific issues
 - Look for patterns indicating performance problems, memory leaks, or security issues

@@ -10,13 +10,29 @@ public interface ILogAnalysisService
     /// <summary>
     /// Analyzes logs based on the specified criteria and generates a comprehensive report.
     /// </summary>
-    /// <param name="logLevels">The log levels to analyze (e.g., Error, Critical, Warning).</param>
+    /// <param name="logLevels">The log levels to analyze (e.g., Error, Fatal, Warning; Umbraco uses Fatal rather than Critical).</param>
     /// <param name="timeRange">The time range filter for logs (e.g., "1hour", "24hours", "7days").</param>
+    /// <param name="umbracoAiProfileAlias">
+    /// Same semantics as <see cref="AnalysisRequest.UmbracoAiProfileAlias"/> when calling from the API.
+    /// </param>
     /// <param name="cancellationToken">Cancellation token for the async operation.</param>
     /// <returns>An analysis report containing diagnostics information.</returns>
     Task<AnalysisReport> AnalyzeLogsAsync(
         List<string> logLevels,
         string timeRange,
+        string? umbracoAiProfileAlias = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Analyzes one selected log entry and returns a focused diagnostic result.
+    /// </summary>
+    /// <param name="logEntry">The log entry to analyze.</param>
+    /// <param name="umbracoAiProfileAlias">Same semantics as <see cref="AnalysisRequest.UmbracoAiProfileAlias"/>.</param>
+    /// <param name="cancellationToken">Cancellation token for the async operation.</param>
+    /// <returns>An analysis result for the selected log entry.</returns>
+    Task<SingleLogAnalysisResponse> AnalyzeSingleLogEntryAsync(
+        LogEntry logEntry,
+        string? umbracoAiProfileAlias = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -37,4 +53,12 @@ public interface ILogAnalysisService
     /// <param name="logs">The list of log entries to deduplicate.</param>
     /// <returns>A deduplicated list of log entries with occurrence counts.</returns>
     Dictionary<string, (LogEntry Log, int Count)> DeduplicateLogs(List<LogEntry> logs);
+
+    /// <summary>
+    /// Builds time-bucketed log counts for trend and visualization workspace views.
+    /// </summary>
+    Task<LogTrendReport> GetLogTrendsAsync(
+        List<string> logLevels,
+        string timeRange,
+        CancellationToken cancellationToken = default);
 }

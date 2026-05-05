@@ -1,37 +1,33 @@
 import { UmbElementMixin as R } from "@umbraco-cms/backoffice/element-api";
-import { LitElement as E, html as o, unsafeHTML as v, css as A, state as p, customElement as L } from "@umbraco-cms/backoffice/external/lit";
-import { UmbracoAIDiagnosticsRepository as I } from "./repository.js";
-var W = Object.defineProperty, M = Object.getOwnPropertyDescriptor, $ = (r) => {
-  throw TypeError(r);
-}, c = (r, e, t, u) => {
-  for (var l = u > 1 ? void 0 : u ? M(e, t) : e, a = r.length - 1, s; a >= 0; a--)
-    (s = r[a]) && (l = (u ? s(e, t, l) : s(l)) || l);
-  return u && l && W(e, t, l), l;
-}, f = (r, e, t) => e.has(r) || $("Cannot " + t), k = (r, e, t) => (f(r, e, "read from private field"), e.get(r)), b = (r, e, t) => e.has(r) ? $("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), S = (r, e, t, u) => (f(r, e, "write to private field"), e.set(r, t), t), h = (r, e, t) => (f(r, e, "access private method"), t), m, d, x, w, y, z, C;
-let n = class extends R(E) {
+import { LitElement as L, html as t, unsafeHTML as v, css as P, state as l, customElement as W } from "@umbraco-cms/backoffice/external/lit";
+import { renderAnalysisMarkdown as _, analysisMarkdownContentStyles as F } from "./analysis-markdown.js";
+import { UmbracoAIDiagnosticsRepository as D } from "./repository.js";
+var S = Object.defineProperty, I = Object.getOwnPropertyDescriptor, y = (e) => {
+  throw TypeError(e);
+}, s = (e, i, r, u) => {
+  for (var a = u > 1 ? void 0 : u ? I(i, r) : i, g = e.length - 1, f; g >= 0; g--)
+    (f = e[g]) && (a = (u ? f(i, r, a) : f(a)) || a);
+  return u && a && S(i, r, a), a;
+}, x = (e, i, r) => i.has(e) || y("Cannot " + r), p = (e, i, r) => (x(e, i, "read from private field"), i.get(e)), m = (e, i, r) => i.has(e) ? y("Cannot add the same private member more than once") : i instanceof WeakSet ? i.add(e) : i.set(e, r), b = (e, i, r, u) => (x(e, i, "write to private field"), i.set(e, r), r), c = (e, i, r) => (x(e, i, "access private method"), r), d, h, n, k, w, $, z, C, A, E;
+function U(e) {
+  const i = e?.profiles ?? [];
+  if (i.length === 0)
+    return "";
+  const r = e?.defaultProfileAlias?.trim();
+  if (r && i.some((a) => a.alias === r))
+    return r;
+  const u = i.find((a) => a.isDefault);
+  return u ? u.alias : i[0].alias;
+}
+let o = class extends R(L) {
   constructor() {
-    super(), b(this, d), this._loading = !1, this._error = "", this._report = null, this._criticalChecked = !0, this._errorChecked = !0, this._warningChecked = !0, this._timeRange = "1hour", b(this, m), S(this, m, new I(this));
+    super(), m(this, n), this._loading = !1, this._error = "", this._report = null, this._fatalChecked = !0, this._errorChecked = !0, this._warningChecked = !0, this._timeRange = "1hour", this._profileAlias = "", this._profiles = [], this._profilesError = "", m(this, d), m(this, h, !1), b(this, d, new D(this));
   }
-  // Add the markdown rendering function
-  renderMarkdown(r) {
-    if (!r) return "";
-    let e = r;
-    e = e.replace(/```(\w+)?\r?\n([\s\S]*?)```/g, (a, s, g) => {
-      const i = g.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      return `<pre><code class="language-${s || "plaintext"}">${i.trim()}</code></pre>`;
-    }), e = e.replace(/`([^`]+)`/g, (a, s) => `<code>${s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code>`), e = e.replace(/\*\*([^\*]+?)\*\*/g, "<strong>$1</strong>"), e = e.replace(/__([^_]+?)__/g, "<strong>$1</strong>"), e = e.replace(/\*([^\*]+?)\*/g, "<em>$1</em>"), e = e.replace(/_([^_]+?)_/g, "<em>$1</em>"), e = e.replace(/~~(.+?)~~/g, "<del>$1</del>"), e = e.replace(/^######\s+(.+)$/gm, "<h6>$1</h6>"), e = e.replace(/^#####\s+(.+)$/gm, "<h5>$1</h5>"), e = e.replace(/^####\s+(.+)$/gm, "<h4>$1</h4>"), e = e.replace(/^###\s+(.+)$/gm, "<h3>$1</h3>"), e = e.replace(/^##\s+(.+)$/gm, "<h2>$1</h2>"), e = e.replace(/^#\s+(.+)$/gm, "<h1>$1</h1>"), e = e.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'), e = e.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />'), e = e.replace(/^>\s+(.+)$/gm, "<blockquote>$1</blockquote>"), e = e.replace(/^---$/gm, "<hr>"), e = e.replace(/^\*\*\*$/gm, "<hr>");
-    const t = /(?:^\*\s+.+$\n?)+/gm;
-    e = e.replace(t, (a) => `<ul>${a.split(`
-`).filter((i) => i.trim()).map((i) => `<li>${i.replace(/^\*\s+/, "")}</li>`).join("")}</ul>`);
-    const u = /(?:^-\s+.+$\n?)+/gm;
-    e = e.replace(u, (a) => `<ul>${a.split(`
-`).filter((i) => i.trim()).map((i) => `<li>${i.replace(/^-\s+/, "")}</li>`).join("")}</ul>`);
-    const l = /(?:^\d+\.\s+.+$\n?)+/gm;
-    return e = e.replace(l, (a) => `<ol>${a.split(`
-`).filter((i) => i.trim()).map((i) => `<li>${i.replace(/^\d+\.\s+/, "")}</li>`).join("")}</ol>`), e = e.replace(/\n\n+/g, "</p><p>"), e = e.replace(/\n/g, "<br>"), e.match(/^<(h[1-6]|ul|ol|pre|blockquote|hr)/) || (e = `<p>${e}</p>`), e = e.replace(/<p>(<h[1-6]>)/g, "$1"), e = e.replace(/(<\/h[1-6]>)<\/p>/g, "$1"), e = e.replace(/<p>(<ul>)/g, "$1"), e = e.replace(/(<\/ul>)<\/p>/g, "$1"), e = e.replace(/<p>(<ol>)/g, "$1"), e = e.replace(/(<\/ol>)<\/p>/g, "$1"), e = e.replace(/<p>(<pre>)/g, "$1"), e = e.replace(/(<\/pre>)<\/p>/g, "$1"), e = e.replace(/<p>(<blockquote>)/g, "$1"), e = e.replace(/(<\/blockquote>)<\/p>/g, "$1"), e = e.replace(/<p>(<hr>)<\/p>/g, "$1"), e = e.replace(/<p><\/p>/g, ""), e;
+  connectedCallback() {
+    super.connectedCallback(), p(this, h) || (b(this, h, !0), c(this, n, k).call(this));
   }
   renderFilters() {
-    return o`
+    return t`
       <uui-box headline="Analysis Filters">
         <div class="filters-container">
           <div class="label-group">
@@ -40,21 +36,21 @@ let n = class extends R(E) {
           
           <div class="checkboxes-group">
             <uui-checkbox
-              label="Critical"
-              .checked=${this._criticalChecked}
-              @change=${h(this, d, w)}
+              label="Fatal"
+              .checked=${this._fatalChecked}
+              @change=${c(this, n, $)}
             ></uui-checkbox>
             
             <uui-checkbox
               label="Error"
               .checked=${this._errorChecked}
-              @change=${h(this, d, y)}
+              @change=${c(this, n, z)}
             ></uui-checkbox>
             
             <uui-checkbox
               label="Warning"
               .checked=${this._warningChecked}
-              @change=${h(this, d, z)}
+              @change=${c(this, n, C)}
             ></uui-checkbox>
           </div>
 
@@ -66,7 +62,7 @@ let n = class extends R(E) {
             <select
               class="time-range-select"
               .value=${this._timeRange}
-              @change=${h(this, d, C)}
+              @change=${c(this, n, A)}
             >
               <option value="1hour" ?selected=${this._timeRange === "1hour"}>Last 1 hour</option>
               <option value="2hours" ?selected=${this._timeRange === "2hours"}>Last 2 hours</option>
@@ -76,11 +72,32 @@ let n = class extends R(E) {
             </select>
           </div>
 
+          <div class="label-group">
+            <label>Chat profile:</label>
+          </div>
+
+          <div class="dropdown-group profile-dropdown-group">
+            <select
+              class="time-range-select"
+              .value=${this._profileAlias}
+              @change=${c(this, n, E)}
+              ?disabled=${this._profiles.length === 0}
+            >
+              ${this._profiles.map(
+      (e) => t`
+                  <option value=${e.alias}>${e.name?.trim() || e.alias}</option>
+                `
+    )}
+            </select>
+          </div>
+
+          ${this._profilesError ? t`<span class="profiles-error" title=${this._profilesError}>Profile list unavailable</span>` : ""}
+
           <div class="button-group">
             <uui-button
               look="primary"
               label="Analyze"
-              @click=${h(this, d, x)}
+              @click=${c(this, n, w)}
               ?disabled=${this._loading}
             >
               <uui-icon name="wand"></uui-icon>
@@ -92,7 +109,7 @@ let n = class extends R(E) {
     `;
   }
   renderResults() {
-    return this._report ? o`
+    return this._report ? t`
       <uui-box headline="Analysis Results">
         <div class="stack">
           <div class="inline">
@@ -101,39 +118,39 @@ let n = class extends R(E) {
             <uui-tag>Range: ${this._report.timeRange || this._timeRange}</uui-tag>
           </div>
           
-          ${this._report.aiSummary ? o`
+          ${this._report.aiSummary ? t`
             <uui-box headline="AI Summary">
-              <div class="ai-summary markdown-content">${v(this.renderMarkdown(this._report.aiSummary))}</div>
+              <div class="ai-summary markdown-content">${v(_(this._report.aiSummary))}</div>
             </uui-box>
           ` : ""}
           
-          ${this._report.logAnalysisItems?.length ? o`
+          ${this._report.logAnalysisItems?.length ? t`
             <div class="logs">
-              ${this._report.logAnalysisItems.map((r) => o`
+              ${this._report.logAnalysisItems.map((e) => t`
                 <uui-box>
                   <div class="inline">
-                    <uui-badge color="danger">${r.logEntry?.level || "Unknown"}</uui-badge>
-                    <uui-tag>${r.occurrenceCount || 1} occurrences</uui-tag>
-                    <uui-badge color="danger">${r.logEntry?.severityAssessment || "Unknown"}</uui-badge>
+                    <uui-badge color="danger">${e.logEntry?.level ?? e.logEntry?.Level ?? "Unknown"}</uui-badge>
+                    <uui-tag>${e.occurrenceCount || 1} occurrences</uui-tag>
+                    <uui-badge color="danger">${e.severityAssessment || "Unknown"}</uui-badge>
                   </div>
                   <p>
-                    <strong>${r.logEntry?.timestamp ? new Date(r.logEntry.timestamp).toLocaleString() : "No timestamp"}</strong>
+                    <strong>${e.logEntry?.timestamp ? new Date(e.logEntry.timestamp).toLocaleString() : "No timestamp"}</strong>
                   </p>
-                  <pre>${r.logEntry?.message || "No message"}</pre>
+                  <pre>${e.logEntry?.message || "No message"}</pre>
                   
-                  ${r.likelyCause ? o`
+                  ${e.likelyCause ? t`
                     <div class="markdown-content">
                       <strong>Likely cause:</strong>
-                      <div>${v(this.renderMarkdown(r.likelyCause))}</div>
+                      <div>${v(_(e.likelyCause))}</div>
                     </div>
                   ` : ""}
                   
-                  ${r.suggestedFixes?.length ? o`
+                  ${e.suggestedFixes?.length ? t`
                     <div class="suggested-fixes markdown-content">
                       <strong>Suggested fixes:</strong>
                       <div>
-                        ${r.suggestedFixes.map((e) => o`
-                          <div class="fix-item">${v(this.renderMarkdown(e))}</div>
+                        ${e.suggestedFixes.map((i) => t`
+                          <div class="fix-item">${v(_(i))}</div>
                         `)}
                       </div>
                     </div>
@@ -141,7 +158,7 @@ let n = class extends R(E) {
                 </uui-box>
               `)}
             </div>
-          ` : o`
+          ` : t`
             <p class="no-logs">No log entries found for the selected criteria.</p>
           `}
         </div>
@@ -149,11 +166,11 @@ let n = class extends R(E) {
     ` : null;
   }
   render() {
-    return o`
+    return t`
       <div class="container">
         ${this.renderFilters()}
         
-        ${this._loading ? o`
+        ${this._loading ? t`
           <uui-box>
             <div class="loading-container">
               <uui-loader></uui-loader>
@@ -162,7 +179,7 @@ let n = class extends R(E) {
           </uui-box>
         ` : ""}
         
-        ${this._error ? o`
+        ${this._error ? t`
           <uui-box headline="Error" color="danger">
             <p>${this._error}</p>
           </uui-box>
@@ -173,43 +190,65 @@ let n = class extends R(E) {
     `;
   }
 };
-m = /* @__PURE__ */ new WeakMap();
-d = /* @__PURE__ */ new WeakSet();
-x = async function() {
-  if (this._loading = !0, this._error = "", this._report = null, !k(this, m)) {
+d = /* @__PURE__ */ new WeakMap();
+h = /* @__PURE__ */ new WeakMap();
+n = /* @__PURE__ */ new WeakSet();
+k = async function() {
+  if (!p(this, d))
+    return;
+  this._profilesError = "";
+  const e = await p(this, d).getChatProfiles();
+  if (e.error) {
+    this._profilesError = e.error, this._profiles = [], this._profileAlias = "";
+    return;
+  }
+  this._profiles = e.data?.profiles ?? [], this._profileAlias = U(e.data);
+};
+w = async function() {
+  if (this._loading = !0, this._error = "", this._report = null, !p(this, d)) {
     this._error = "Repository not initialized", this._loading = !1;
     return;
   }
   try {
-    const r = [];
-    if (this._criticalChecked && r.push("Critical"), this._errorChecked && r.push("Error"), this._warningChecked && r.push("Warning"), r.length === 0) {
+    const e = [];
+    if (this._fatalChecked && e.push("Fatal"), this._errorChecked && e.push("Error"), this._warningChecked && e.push("Warning"), e.length === 0) {
       this._error = "Please select at least one log level", this._loading = !1;
       return;
     }
-    const e = await k(this, m).analyzeWithFilters(r, this._timeRange);
-    e ? this._report = e.data : this._error = "Failed to load AI diagnostics";
-  } catch (r) {
-    this._error = `Error: ${r}`, console.error("Error analyzing logs:", r);
+    const i = await p(this, d).analyzeWithFilters(
+      e,
+      this._timeRange,
+      this._profileAlias
+    );
+    i ? this._report = i.data : this._error = "Failed to load AI diagnostics";
+  } catch (e) {
+    this._error = `Error: ${e}`, console.error("Error analyzing logs:", e);
   }
   this._loading = !1;
 };
-w = function(r) {
-  const e = r.target;
-  this._criticalChecked = e.checked;
+$ = function(e) {
+  const i = e.target;
+  this._fatalChecked = i.checked;
 };
-y = function(r) {
-  const e = r.target;
-  this._errorChecked = e.checked;
+z = function(e) {
+  const i = e.target;
+  this._errorChecked = i.checked;
 };
-z = function(r) {
-  const e = r.target;
-  this._warningChecked = e.checked;
+C = function(e) {
+  const i = e.target;
+  this._warningChecked = i.checked;
 };
-C = function(r) {
-  const e = r.target;
-  this._timeRange = e.value, console.log("Time range changed to:", this._timeRange);
+A = function(e) {
+  const i = e.target;
+  this._timeRange = i.value, console.log("Time range changed to:", this._timeRange);
 };
-n.styles = A`
+E = function(e) {
+  const i = e.target;
+  this._profileAlias = i.value;
+};
+o.styles = [
+  F,
+  P`
     :host {
       display: block;
       padding: var(--uui-size-space-5);
@@ -254,6 +293,19 @@ n.styles = A`
       align-items: center;
       width: 180px;
       margin-right: var(--uui-size-space-4);
+    }
+
+    .profile-dropdown-group {
+      width: min(280px, 42vw);
+    }
+
+    .profiles-error {
+      font-size: 0.75rem;
+      color: var(--uui-color-danger);
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .dropdown-group uui-select {
@@ -389,121 +441,47 @@ n.styles = A`
       font-weight: 600;
     }
 
-    /* Markdown content styles */
-    .markdown-content {
-      line-height: 1.6;
-    }
-
-    .markdown-content p {
-      margin: var(--uui-size-space-2) 0;
-    }
-
-    .markdown-content strong {
-      font-weight: 600;
-    }
-
-    .markdown-content em {
-      font-style: italic;
-    }
-
-    .markdown-content code {
-      background: var(--uui-color-surface-alt);
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9em;
-    }
-
-    .markdown-content pre {
-      background: var(--uui-color-surface-alt);
-      padding: var(--uui-size-space-3);
-      border-radius: var(--uui-border-radius);
-      overflow-x: auto;
-      margin: var(--uui-size-space-3) 0;
-    }
-
-    .markdown-content pre code {
-      background: none;
-      padding: 0;
-    }
-
-    .markdown-content ul,
-    .markdown-content ol {
-      margin: var(--uui-size-space-2) 0;
-      padding-left: var(--uui-size-space-5);
-    }
-
-    .markdown-content li {
-      margin-bottom: var(--uui-size-space-1);
-    }
-
-    .markdown-content h1,
-    .markdown-content h2,
-    .markdown-content h3,
-    .markdown-content h4,
-    .markdown-content h5,
-    .markdown-content h6 {
-      margin: var(--uui-size-space-3) 0 var(--uui-size-space-2) 0;
-      font-weight: 600;
-    }
-
-    .markdown-content h1 { font-size: 1.5em; }
-    .markdown-content h2 { font-size: 1.3em; }
-    .markdown-content h3 { font-size: 1.1em; }
-
-    .markdown-content blockquote {
-      border-left: 3px solid var(--uui-color-border);
-      padding-left: var(--uui-size-space-3);
-      margin: var(--uui-size-space-3) 0;
-      color: var(--uui-color-text-alt);
-    }
-
-    .markdown-content hr {
-      border: none;
-      border-top: 1px solid var(--uui-color-border);
-      margin: var(--uui-size-space-4) 0;
-    }
-
-    .markdown-content a {
-      color: var(--uui-color-interactive);
-      text-decoration: none;
-    }
-
-    .markdown-content a:hover {
-      text-decoration: underline;
-    }
-
     .fix-item {
       margin-bottom: var(--uui-size-space-2);
     }
-  `;
-c([
-  p()
-], n.prototype, "_loading", 2);
-c([
-  p()
-], n.prototype, "_error", 2);
-c([
-  p()
-], n.prototype, "_report", 2);
-c([
-  p()
-], n.prototype, "_criticalChecked", 2);
-c([
-  p()
-], n.prototype, "_errorChecked", 2);
-c([
-  p()
-], n.prototype, "_warningChecked", 2);
-c([
-  p()
-], n.prototype, "_timeRange", 2);
-n = c([
-  L("umbraco-ai-diagnostics-workspace-view")
-], n);
-const F = n;
+  `
+];
+s([
+  l()
+], o.prototype, "_loading", 2);
+s([
+  l()
+], o.prototype, "_error", 2);
+s([
+  l()
+], o.prototype, "_report", 2);
+s([
+  l()
+], o.prototype, "_fatalChecked", 2);
+s([
+  l()
+], o.prototype, "_errorChecked", 2);
+s([
+  l()
+], o.prototype, "_warningChecked", 2);
+s([
+  l()
+], o.prototype, "_timeRange", 2);
+s([
+  l()
+], o.prototype, "_profileAlias", 2);
+s([
+  l()
+], o.prototype, "_profiles", 2);
+s([
+  l()
+], o.prototype, "_profilesError", 2);
+o = s([
+  W("umbraco-ai-diagnostics-workspace-view")
+], o);
+const V = o;
 export {
-  n as UmbracoAIDiagnosticsWorkspaceViewElement,
-  F as default
+  o as UmbracoAIDiagnosticsWorkspaceViewElement,
+  V as default
 };
 //# sourceMappingURL=workspace-view.js.map
