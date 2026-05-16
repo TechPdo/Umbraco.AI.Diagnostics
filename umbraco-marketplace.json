@@ -3,6 +3,7 @@
   "AddOnPackagesRequiredForUmbracoCloud": [],
   "AuthorDetails": {
     "Name": "Pasang Tamang",
+    "Description":"Pasang Tamang is a long-time Umbraco specialist and web developer with a strong focus on .NET technologies, developer productivity, and modern CMS solutions. Having worked with Umbraco since 2010, he has extensive experience building scalable web platforms and digital experiences using the Microsoft technology stack. Beyond development, he actively contributes to the tech community through speaking engagements, technical writing, community events, and open-source contributions, including developing packages for the Umbraco ecosystem.",
     "Url": "https://github.com/TechPdo",
     "ImageUrl": "https://raw.githubusercontent.com/TechPdo/TechPdo/main/pasang%20curicature%20small.png",
     "SyncContributorsFromRepository": false
